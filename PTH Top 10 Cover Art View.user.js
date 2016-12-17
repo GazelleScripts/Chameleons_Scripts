@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH Top 10 Cover Art View
-// @version      0.4
+// @version      0.5
 // @description  Show the top 10 with album art rather than as a list
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/top10.php
@@ -66,7 +66,7 @@ function addTorrent(div, t, dlLinkAdd, width)
   d1.appendChild(s);
   s.innerHTML = t.format+' / '+t.encoding+' / '+t.media+' - '+prettyPrint(t.size);
   d1.appendChild(document.createElement('br'));
-  
+
   var s=document.createElement('span');
   d1.appendChild(s);
   s.innerHTML = t.snatched;
@@ -98,6 +98,7 @@ function gotTop10(div, response)
   var innerWidth=width-(2*margin);
   var borderRadius=15;
   var dlLinkAdd="&authkey="+document.getElementsByClassName('group_info')[0].getElementsByTagName('a')[0].href.split('authkey=')[1];
+  console.log(r);
 
   for(var j=0; j<r.response.length; j++)
   {
@@ -135,6 +136,24 @@ function gotTop10(div, response)
       }
       if(!t.artist)
         continue;
+      var ignoreTags = settings.ignoreTags.split(',');
+      var hasIgnoredTag = false;
+      for(var k=0; k<ignoreTags.length; k++)
+      {
+        for(var l=0; l<t.tags.length; l++)
+        {
+          if(ignoreTags[k].trim().toLowerCase() == t.tags[l].trim().toLowerCase())
+          {
+            hasIgnoredTag=true;
+            break;
+          }
+        }
+        if(hasIgnoredTag)
+          break;
+      }
+      if(hasIgnoredTag)
+        continue;
+
       done.push(t.groupId);
       alCount++;
 
@@ -184,7 +203,7 @@ function gotTop10(div, response)
         {
           s.innerHTML = s.innerHTML.slice(0, -4)+'...';
           count++;
-          if(count > 100)
+          if(count > 500)
             break;
         }
       }
@@ -209,13 +228,32 @@ function gotTop10(div, response)
           gName = gName.slice(0, -1);
           s.innerHTML = '<a href="/torrents.php?id='+t.groupId+'" style="font-weight: bold;">'+gName+'...</a> ['+t.groupYear+']';
           count++;
-          if(count > 100)
+          if(count > 500)
             break;
         }
       }
       else
       {
         s.innerHTML = '<a href="/torrents.php?id='+t.groupId+'" style="font-weight: bold;">'+t.groupName+'</a> ['+t.groupYear+']';
+      }
+      meta.appendChild(document.createElement('br'));
+
+      if(t.tags.length > 0)
+      {
+        var s=document.createElement('span');
+        s.setAttribute('style', 'white-space: nowrap; text-overflow: ellipsis; overflow: hidden; display: inline-block; max-width: 224px; padding: 0;');
+        s.setAttribute('class', 'tags');
+        meta.appendChild(s);
+        for(var k=0; k<t.tags.length; k++)
+        {
+          var ta=t.tags[k];
+          var a=document.createElement('a');
+          a.href='/torrents.php?taglist='+ta;
+          a.innerHTML=ta;
+          if(k > 0)
+            s.appendChild(document.createTextNode(', '));
+          s.appendChild(a);
+        }
       }
       meta.appendChild(document.createElement('br'));
 
@@ -319,6 +357,18 @@ function showSettings(message)
   div.appendChild(input);
   input.addEventListener('change', changeSettings.bind(undefined, div), false);
 
+  div.appendChild(document.createElement('br'));
+  var label = document.createElement('span');
+  label.setAttribute('style', labelStyle);
+  label.innerHTML = 'Ignore Tags: ';
+  div.appendChild(label);
+  var input=document.createElement('input');
+  input.setAttribute('style', 'width: 20em;');
+  input.placeholder='Ignore torrents with these tags';
+  input.value = settings.ignoreTags ? settings.ignoreTags:'';
+  div.appendChild(input);
+  input.addEventListener('change', changeSettings.bind(undefined, div), false);
+
   var a=document.createElement('a');
   a.href='javascript:void(0);';
   a.innerHTML = 'Save';
@@ -338,6 +388,8 @@ function changeSettings(div, nul, message)
   if(isNaN(settings.topX))
     settings.topX = 10;
 
+  settings.ignoreTags = inputs[2].value;
+
   window.localStorage.top10CoverArtViewSettings = JSON.stringify(settings);
   showSettings(message);
 }
@@ -347,10 +399,12 @@ function getSettings()
   var settings = window.localStorage.top10CoverArtViewSettings;
   if(!settings)
   {
-    settings = {horizontalCoverCount:5, topX:10};
+    settings = {horizontalCoverCount:5, topX:10, ignoreTags:''};
   }
   else
     settings = JSON.parse(settings);
+  if(!settings.ignoreTags)
+    settings.ignoreTags='';
   return settings;
 }
 
