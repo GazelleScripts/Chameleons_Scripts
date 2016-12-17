@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Rehost image to...
-// @version      0.9
+// @version      1.0
 // @description  Rehost images to a whitelisted site by ctrl+shift+clicking them
 // @author       Chameleon
 // @include      *
