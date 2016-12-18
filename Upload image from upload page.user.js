@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Upload image from upload page
-// @version      1.0
+// @version      1.1
 // @description  Upload album art from within the PTH upload page
 // @author       Chameleon
 // @include      http*://*passtheheadphones.me/upload.php*
@@ -372,9 +372,9 @@ function upload(status, file)
       url: 'https://ptpimg.me/upload.php',
       //binary: true,
       data: formData,
-      headers: {
+     /* headers: {
         "Content-Type": "multipart/form-data"
-      },
+      },*/
       onload: function(response) {
         if(response.status == 200)
         {
@@ -383,7 +383,7 @@ function upload(status, file)
         else
         {
           console.log("Failed to upload: \n"+response.responseHeaders+' '+response.status+' '+response.statusText);
-          status.innerHTML = "Yeah.. this doesn't work yet. Sorry :(";
+          status.innerHTML = "Failed to upload to ptpimg.me: "+response.status;
           return;
         }
       }
