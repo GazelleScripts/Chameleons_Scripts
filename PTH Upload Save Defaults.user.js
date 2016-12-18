@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH Upload Save Defaults
-// @version      0.8
+// @version      0.9
 // @description  Save the dropdown menu selections on the upload form and automatically set them on page load
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/upload.php*
@@ -10,19 +10,19 @@
 
 (function() {
   'use strict';
-  
+
   var before=document.getElementById('upload_table');
 
   var a=document.createElement('a');
   a.setAttribute('style', 'display: block; text-align: center;');
-  a.innerHTML = 'Save dropdown menu options';
+  a.innerHTML = 'Save options';
   a.href = 'javascript:void(0);';
   before.parentNode.insertBefore(a, before);
   a.addEventListener('click', saveOptions.bind(undefined, a), false);
 
   var options=window.localStorage.uploadOptions;
   if(!options)
-    options = {selects:[], multiformat:false};
+    options = {selects:[], multiformat:false, scene:false};
   else
     options = JSON.parse(options);
 
@@ -33,6 +33,8 @@
       createRow();
     }
   }
+  if(options.scene)
+    document.getElementById('scene').checked=true;
   var selects=document.getElementsByTagName('select');
   for(var i=0; i<options.selects.length; i++)
   {
@@ -72,9 +74,10 @@ function saveOptions(a)
     }
     options.multiformat=rowNum;
   }
+  options.scene=document.getElementById('scene').checked;
   window.localStorage.uploadOptions = JSON.stringify(options);
-  a.innerHTML = 'Dropdown menu options saved';
-  window.setTimeout(reset.bind(undefined, a, 'Save dropdown menu options'), 5000);
+  a.innerHTML = 'Options saved';
+  window.setTimeout(reset.bind(undefined, a, 'Save options'), 5000);
 }
 
 function reset(a, message)
