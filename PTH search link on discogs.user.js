@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH search link on discogs
-// @version      0.2
+// @version      0.3
 // @description  Link to a search from discogs pages to PTH
 // @author       Chameleon
 // @include      http*://*discogs.com/*
@@ -17,7 +17,7 @@
     album=album[album.length-1].textContent.trim();
     
     var span=pTitle.getElementsByTagName('a')[0].parentNode;
-    var artist=span.getAttribute('title');
+    var artist=span.getAttribute('title').replace(/\(.*\)/g, '');
     
     var a=document.createElement('a');
     a.href="https://passtheheadphones.me/artist.php?artistname="+artist;
