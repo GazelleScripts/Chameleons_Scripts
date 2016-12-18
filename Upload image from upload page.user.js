@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Upload image from upload page
-// @version      1.2
+// @version      1.3
 // @description  Upload album art from within the PTH upload page
 // @author       Chameleon
 // @include      http*://*passtheheadphones.me/upload.php*
