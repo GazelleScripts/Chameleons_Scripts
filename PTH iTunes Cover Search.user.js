@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH iTunes Cover Search
-// @version      1.1
+// @version      1.2
 // @description  Search iTunes for cover art
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/*
@@ -87,7 +87,7 @@ function getUploadAlbum(a, al, im, td, messageDiv)
 
 function getAlbum(artist, album, im, td, messageDiv)
 {
-  console.log(im);
+  //console.log(im);
 
   /*var xhr = new XMLHttpRequest();
   xhr.open('GET', "https://itunes.apple.com/search?"+encodeURIComponent(artist+' '+album));
@@ -108,8 +108,13 @@ function gotAlbum(input, td, messageDiv, response)
   var r=JSON.parse(response);
   if(r.results.length > 0)
   {
+    var a=document.createElement('a');
+    a.href='javascript:void(0);';
+    td.appendChild(a);
     var img=document.createElement('img');
-    td.appendChild(img);
+    a.setAttribute('imageSize', 'large');
+    a.addEventListener('click', changeSize.bind(undefined, a, img, input, r.results[0].artworkUrl60), false);
+    a.appendChild(img);
     img.src=r.results[0].artworkUrl60.replace("60x60bb", "10000x10000-999");
     input.value = img.src;
     var evt = document.createEvent("HTMLEvents");
@@ -118,6 +123,25 @@ function gotAlbum(input, td, messageDiv, response)
   }
   else
     messageDiv.innerHTML = "no results";
+}
+
+function changeSize(a, img, input, url)
+{
+  if(a.getAttribute('imageSize') == 'large')
+  {
+    a.setAttribute('imageSize', 'small');
+    url=url.replace("60x60bb", "600x600bb");
+  }
+  else
+  {
+    a.setAttribute('imageSize', 'large');
+    url=url.replace("60x60bb", "10000x10000-999");
+  }
+  input.value=url;
+  img.src=url;
+  var evt = document.createEvent("HTMLEvents");
+  evt.initEvent("keyup", false, true);
+  input.dispatchEvent(evt);
 }
 
 function rehost(imageInput, span)
