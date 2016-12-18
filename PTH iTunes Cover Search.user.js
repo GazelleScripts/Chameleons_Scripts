@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH iTunes Cover Search
-// @version      1.3
+// @version      1.4
 // @description  Search iTunes for cover art
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/*
@@ -27,7 +27,7 @@ function saveArtist()
 function showEdit()
 {
   var before=document.getElementsByClassName('edit_form')[0].getElementsByTagName('br')[0];
-  var image=before.previousElementSibling.getElementsByTagName('input')[0];
+  var image=document.getElementsByName('image')[0];
   var artist=window.localStorage.lastArtist;
   if(!artist)
     artist='';
