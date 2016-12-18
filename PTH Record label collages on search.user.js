@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH Record label collages on search
-// @version      0.1
+// @version      0.2
 // @description  Show record label collages on searches that include a record label
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/torrents.php*recordlabel=*
@@ -13,7 +13,26 @@
   var recordLabel = window.location.href.split('recordlabel=')[1].split('&')[0];
 
   var div=document.createElement('div');
-  div.setAttribute('style', 'text-align: center; background: rgba(0,0,0,0.5); margin: 10px 0 10px 0;');
+  var stylesheets=document.styleSheets;
+  var color=false;
+  for(var i=0; i<stylesheets.length; i++)
+  {
+    var s=stylesheets[i];
+    for(var j=0; j<s.cssRules.length; j++)
+    {
+      var r=s.cssRules[j];
+      if(r.selectorText.indexOf('tr.group,') != -1)
+      {
+        color=r.cssText.split('{ ')[1].split(' }')[0];
+        break;
+      }
+    }
+    if(color)
+      break;
+  }
+  if(!color)
+    color='color: rgba(0,0,0,0.5);';
+  div.setAttribute('style', 'text-align: center; '+color+'; margin: 10px 0 10px 0;');
   var before=document.getElementsByClassName('box filter_torrents')[0].parentNode.nextElementSibling;
   before.parentNode.insertBefore(div, before);
 
