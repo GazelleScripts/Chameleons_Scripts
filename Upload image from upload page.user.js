@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Upload image from upload page
-// @version      1.1
+// @version      1.2
 // @description  Upload album art from within the PTH upload page
 // @author       Chameleon
 // @include      http*://*passtheheadphones.me/upload.php*
@@ -413,8 +413,31 @@ function uploaded(status, response)
     return;
   }
 
-  status.innerHTML = 'Uploaded<br /><img src="'+newLink+'">';
+  status.innerHTML = 'Uploaded<br />';
+  var img=document.createElement('img');
+  var a=document.createElement('a');
+  status.appendChild(a);
+  status.appendChild(document.createElement('br'));
+  status.appendChild(img);
+  a.innerHTML='Hide image';
+  a.href='javascript:void(0);';
+  a.addEventListener('click', toggleImage.bind(undefined, a, img), false);
+  img.src=newLink;
   document.getElementById('image').value = newLink;
+}
+
+function toggleImage(a, img)
+{
+  if(img.style.display=='none')
+  {
+    img.style.display='initial';
+    a.innerHTML = 'Hide image';
+  }
+  else
+  {
+    img.style.display='none';
+    a.innerHTML = 'Show image';
+  }
 }
 
 function xhr_func(messageDiv, xhr, func, repeatFunc)
