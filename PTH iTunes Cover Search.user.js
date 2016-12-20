@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH iTunes Cover Search
-// @version      1.5
+// @version      1.6
 // @description  Search iTunes for cover art
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/*
@@ -60,7 +60,7 @@ function showEdit()
   var search=document.createElement('input');
   optionsDiv.appendChild(search);
   search.setAttribute('placeholder', 'search');
-  search.value=(artist.value+' '+album.value).trim();
+  search.value=(artist+' '+album).trim();
   var country=document.createElement('input');
   optionsDiv.appendChild(country);
   country.setAttribute('placeholder', 'country code');
@@ -79,7 +79,12 @@ function showEdit()
   div.appendChild(messageDiv);
   a.innerHTML='Get image from iTunes';
   a.href='javascript:void(0);';
-  a.addEventListener('click', getAlbum.bind(undefined, search, country, image, div, messageDiv), false);
+  a.addEventListener('click', getAlbum.bind(undefined, country, search, image, div, messageDiv), false);
+
+  var imageDiv=document.createElement('div');
+  imageDiv.setAttribute('id', 'iTunesImageDiv');
+  imageDiv.setAttribute('style', 'text-align: center;');
+  div.appendChild(imageDiv);
 }
 
 function toggleDiv(a, div)
@@ -164,6 +169,7 @@ function getAlbum(country, search, im, td, messageDiv)
 
 function gotAlbum(input, td, messageDiv, response)
 {
+  messageDiv.innerHTML = 'Got images';
   var r=JSON.parse(response);
   if(r.results.length > 0)
   {
