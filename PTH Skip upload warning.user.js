@@ -9,8 +9,6 @@
 // @grant        none
 // ==/UserScript==
 
-var debugOn=false;
-
 (function() {
   'use strict';
 
@@ -72,10 +70,11 @@ var debugOn=false;
         largestId=id;
     }
     document.getElementById('torrent'+largestId).getElementsByTagName('a')[0].click();*/
-    
+
     for(var i=0; i<download.length; i++)
     {
       document.getElementById('torrent'+download[i]).getElementsByTagName('a')[0].click();
+      debug("link "+i+": "+download[i]);
     }
 
     bypass.downloaded=true;
@@ -106,13 +105,21 @@ function showSettings()
   a.addEventListener('click', changeSettings.bind(undefined, a, div), false);
   div.appendChild(a);
   div.appendChild(document.createElement('br'));
+
+  var a=document.createElement('a');
+  a.href='javascript:void(0);';
+  a.innerHTML = 'Debug: '+(settings.debug ? 'On':'Off');
+  a.addEventListener('click', changeSettings.bind(undefined, a, div), false);
+  div.appendChild(a);
+  div.appendChild(document.createElement('br'));
 }
 
 function debug(text)
 {
-  if(!debugOn)
+  var settings=getSettings();
+  if(!settings.debug)
     return;
-  
+
   var debugDiv=document.getElementById('ChameleonDebug');
   if(!debugDiv)
   {
@@ -130,14 +137,27 @@ function changeSettings(a, div)
 {
   var settings=getSettings();
   var as=div.getElementsByTagName('a');
-  if(as[0].innerHTML.indexOf('Off') != -1) 
+  if(a == as[0])
   {
-    settings.downloadTorrents = true;
+    if(as[0].innerHTML.indexOf('Off') != -1) 
+    {
+      settings.downloadTorrents = true;
+    }
+    else
+      settings.downloadTorrents = false;
   }
-  else
-    settings.downloadTorrents = false;
-  
+  if(a == as[1])
+  {
+    if(as[0].innerHTML.indexOf('Off') != -1) 
+    {
+      settings.debug = true;
+    }
+    else
+      settings.debug = false;
+  }
+
   window.localStorage.skipUploadWarningSettings = JSON.stringify(settings);
+  showSettings();
 }
 
 function getSettings()
