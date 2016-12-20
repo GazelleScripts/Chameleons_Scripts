@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH iTunes Cover Search
-// @version      1.4
+// @version      1.5
 // @description  Search iTunes for cover art
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/*
@@ -55,12 +55,45 @@ function showEdit()
     }
   }
 
+  var optionsDiv=document.createElement('div');
+  optionsDiv.style.display='none';
+  var search=document.createElement('input');
+  optionsDiv.appendChild(search);
+  search.setAttribute('placeholder', 'search');
+  search.value=(artist.value+' '+album.value).trim();
+  var country=document.createElement('input');
+  optionsDiv.appendChild(country);
+  country.setAttribute('placeholder', 'country code');
+  country.value='US';
+
+  var toggle=document.createElement('a');
+  toggle.href='javascript:void(0);';
+  toggle.innerHTML = 'Show search';
+  toggle.addEventListener('click', toggleDiv.bind(undefined, toggle, optionsDiv), false);
+
   var a=document.createElement('a');
   div.appendChild(a);
+  div.appendChild(document.createTextNode(' | '));
+  div.appendChild(toggle);
+  div.appendChild(optionsDiv);
   div.appendChild(messageDiv);
   a.innerHTML='Get image from iTunes';
   a.href='javascript:void(0);';
-  a.addEventListener('click', getAlbum.bind(undefined, artist, album, image, div, messageDiv), false);
+  a.addEventListener('click', getAlbum.bind(undefined, search, country, image, div, messageDiv), false);
+}
+
+function toggleDiv(a, div)
+{
+  if(a.innerHTML.indexOf('Show') != -1)
+  {
+    a.innerHTML = a.innerHTML.replace('Show', 'Hide');
+    div.style.display='';
+  }
+  else
+  {
+    a.innerHTML = a.innerHTML.replace('Hide', 'Show');
+    div.style.display='none';
+  }
 }
 
 function showUpload()
@@ -73,19 +106,40 @@ function showUpload()
   var messageDiv=document.createElement('div');
   imageTd.appendChild(messageDiv);
 
+  var div=imageTd;
+
+  var optionsDiv=document.createElement('div');
+  optionsDiv.style.display='none';
+  var search=document.createElement('input');
+  optionsDiv.appendChild(search);
+  search.setAttribute('placeholder', 'search');
+  search.value=(artist.value+' '+album.value).trim();
+  var country=document.createElement('input');
+  optionsDiv.appendChild(country);
+  country.setAttribute('placeholder', 'country code');
+  country.value='US';
+
+  var toggle=document.createElement('a');
+  toggle.href='javascript:void(0);';
+  toggle.innerHTML = 'Show search';
+  toggle.addEventListener('click', toggleDiv.bind(undefined, toggle, optionsDiv), false);
+
   var a=document.createElement('a');
-  imageTd.appendChild(a);
+  div.appendChild(a);
+  div.appendChild(document.createTextNode(' | '));
+  div.appendChild(toggle);
+  div.appendChild(optionsDiv);
   a.innerHTML='Get image from iTunes';
   a.href='javascript:void(0);';
-  a.addEventListener('click', getUploadAlbum.bind(undefined, artist, album, image, imageTd, messageDiv), false);
+  a.addEventListener('click', getAlbum.bind(undefined, country, search, image, imageTd, messageDiv), false);
+
+  var imageDiv=document.createElement('div');
+  imageDiv.setAttribute('id', 'iTunesImageDiv');
+  imageDiv.setAttribute('style', 'text-align: center;');
+  div.appendChild(imageDiv);
 }
 
-function getUploadAlbum(a, al, im, td, messageDiv)
-{
-  getAlbum(a.value, al.value, im, td, messageDiv);
-}
-
-function getAlbum(artist, album, im, td, messageDiv)
+function getAlbum(country, search, im, td, messageDiv)
 {
   //console.log(im);
 
@@ -96,9 +150,14 @@ function getAlbum(artist, album, im, td, messageDiv)
 
   //console.log("https://itunes.apple.com/search?term="+encodeURIComponent(artist+' '+album));
   messageDiv.innerHTML = 'Searching for image on iTunes';
+  var s="https://itunes.apple.com/search?term="+encodeURIComponent(search.value);
+  if(country.value.length > 0 && country.value != 'US')
+  {
+    s+="&country="+encodeURIComponent(country.value);
+  }
   GM_xmlhttpRequest({
     method: "GET",
-    url: "https://itunes.apple.com/search?term="+encodeURIComponent(artist+' '+album),
+    url: s,
     onload: function(response) { if(response.status == 200) {gotAlbum(im, td, messageDiv, response.responseText); } else { messageDiv.innerHTML = 'iTunes error: '+response.status; } }
   });
 }
@@ -108,9 +167,22 @@ function gotAlbum(input, td, messageDiv, response)
   var r=JSON.parse(response);
   if(r.results.length > 0)
   {
+    var div=document.getElementById('iTunesImageDiv');
+    div.innerHTML='Current: 1 | ';
+    if(r.results.length > 1)
+    {
+      div.setAttribute('results', JSON.stringify(r.results));
+      div.setAttribute('index', '0');
+      var a=document.createElement('a');
+      a.innerHTML='Next';
+      a.href='javascript:void(0);';
+      a.addEventListener('click', changeImage.bind(undefined, div, 1, input), false);
+      div.appendChild(a);
+      div.appendChild(document.createElement('br'));
+    }
     var a=document.createElement('a');
     a.href='javascript:void(0);';
-    td.appendChild(a);
+    div.appendChild(a);
     var img=document.createElement('img');
     a.setAttribute('imageSize', 'large');
     a.addEventListener('click', changeSize.bind(undefined, a, img, input, r.results[0].artworkUrl60), false);
@@ -128,6 +200,74 @@ function gotAlbum(input, td, messageDiv, response)
   }
   else
     messageDiv.innerHTML = "no results";
+}
+
+function changeImage(div, amount, input)
+{
+  var r=JSON.parse(div.getAttribute('results'));
+  var index=parseInt(div.getAttribute('index'));
+  index+=amount;
+  if(index < 0)
+    index=0;
+  if(index >= r.length)
+    index=r.length-1;
+
+  div.setAttribute('index', index);
+
+  div.innerHTML='Current: '+(index+1)+' | ';
+
+  if(index != r.length-1)
+  {
+    //div.setAttribute('results', JSON.stringify(r));
+    div.setAttribute('index', index);
+    var a=document.createElement('a');
+    a.innerHTML='Next';
+    a.href='javascript:void(0);';
+    a.addEventListener('click', changeImage.bind(undefined, div, 1, input), false);
+    div.appendChild(a);
+
+    if(index !== 0)
+      div.appendChild(document.createTextNode(' | '));
+  }
+  if(index !== 0)
+  {
+    //div.setAttribute('results', JSON.stringify(r));
+    div.setAttribute('index', index);
+    var a=document.createElement('a');
+    a.innerHTML='Previous';
+    a.href='javascript:void(0);';
+    a.addEventListener('click', changeImage.bind(undefined, div, -1, input), false);
+    div.appendChild(a);
+  }
+  div.appendChild(document.createTextNode(' | '));
+  var a=document.createElement('a');
+  div.appendChild(a);
+  a.href='javascript:void(0);';
+  a.innerHTML = 'Copy to input';
+  var img=document.createElement('img');
+  a.addEventListener('click', triggerKeyup.bind(undefined, input, img), false);
+
+  div.appendChild(document.createElement('br'));
+
+  var a=document.createElement('a');
+  a.href='javascript:void(0);';
+  div.appendChild(a);
+  a.setAttribute('imageSize', 'large');
+  a.addEventListener('click', changeSize.bind(undefined, a, img, input, r[index].artworkUrl60), false);
+  a.appendChild(img);
+  var artwork=r[index].artworkUrl60.replace("60x60bb", "10000x10000-999");
+  if(window.localStorage.iTunesSize == 'small')
+    artwork=r[index].artworkUrl60.replace("60x60bb", "600x600bb");
+  img.src=artwork;
+  //input.value = img.src;
+}
+
+function triggerKeyup(input, img)
+{
+  input.value=img.src;
+  var evt = document.createEvent("HTMLEvents");
+  evt.initEvent("keyup", false, true);
+  input.dispatchEvent(evt);
 }
 
 function changeSize(a, img, input, url)
