@@ -148,7 +148,7 @@ function changeSettings(a, div)
   }
   if(a == as[1])
   {
-    if(as[0].innerHTML.indexOf('Off') != -1) 
+    if(as[1].innerHTML.indexOf('Off') != -1) 
     {
       settings.debug = true;
     }
