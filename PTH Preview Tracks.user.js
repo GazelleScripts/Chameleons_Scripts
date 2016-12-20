@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH Preview Tracks
-// @version      1.6
+// @version      1.7
 // @description  Embed youtube clips for the tracks of a torrent group
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/torrents.php?id=*
@@ -9,10 +9,12 @@
 // @grant        none
 // ==/UserScript==
 
-var useYoutubeAPI=true;
 (function() {
   'use strict';
-  if(useYoutubeAPI)
+
+  var settings=getSettings();
+
+  if(settings.useYoutubeAPI)
   {
     // include youtube's elephant of an API
     var tag = document.createElement('script');
@@ -22,8 +24,6 @@ var useYoutubeAPI=true;
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     // stop including
   }
-
-  var settings=getSettings();
 
   var wH=window.location.href;
   if(wH.indexOf('index.php') != -1 && useYoutubeAPI && settings.masterPlayer)
@@ -57,18 +57,64 @@ function showSettings()
   a.addEventListener('click', changeSettings.bind(undefined, a, div), false);
   div.appendChild(a);
   div.appendChild(document.createElement('br'));
+
+  var a=document.createElement('a');
+  a.href='javascript:void(0);';
+  a.innerHTML = 'Youtube API: '+(settings.useYoutubeAPI ? 'On':'Off');
+  a.addEventListener('click', changeSettings.bind(undefined, a, div), false);
+  div.appendChild(a);
+  div.appendChild(document.createElement('br'));
+
+  var input=document.createElement('input');
+  input.placeholder = 'Youtube quality';
+  input.value=settings.quality ? settings.quality:'';
+  input.addEventListener('change', changeSettings.bind(undefined, undefined, div), false);
+  div.appendChild(input);
+  div.appendChild(document.createElement('br'));
+
+  var input=document.createElement('input');
+  input.placeholder = 'Youtube volume';
+  input.type='number';
+  input.value=settings.volume ? settings.volume:'';
+  input.addEventListener('change', changeSettings.bind(undefined, undefined, div), false);
+  div.appendChild(input);
+  div.appendChild(document.createElement('br'));
+
+  var a=document.createElement('a');
+  div.appendChild(a);
+  a.href='javascript:void(0);';
+  a.innerHTML = 'Save';
 }
 
 function changeSettings(a, div)
 {
   var settings=getSettings();
   var as=div.getElementsByTagName('a');
-  if(as[0].innerHTML.indexOf('Off') != -1) 
+
+  if(a == as[0])
   {
-    settings.masterPlayer = true;
+    if(as[0].innerHTML.indexOf('Off') != -1) 
+    {
+      settings.masterPlayer = true;
+    }
+    else
+      settings.masterPlayer = false;
   }
-  else
-    settings.masterPlayer = false;
+
+  if(a == as[1])
+  {
+    if(as[1].innerHTML.indexOf('Off') != -1) 
+    {
+      settings.useYoutubeAPI = true;
+    }
+    else
+      settings.useYoutubeAPI = false;
+  }
+
+  var inputs=div.getElementsByTagName('input');
+  settings.quality=inputs[0].value;
+  settings.volume=inputs[1].value;
+
   window.localStorage.previewTracksSettings = JSON.stringify(settings);
   showSettings();
 }
@@ -78,10 +124,12 @@ function getSettings()
   var settings = window.localStorage.previewTracksSettings;
   if(!settings)
   {
-    settings = {masterPlayer:false};
+    settings = {masterPlayer:false, useYoutubeAPI:true};
   }
   else
     settings = JSON.parse(settings);
+  if(settings.useYoutubeAPI !== false)
+    settings.useYoutubeAPI=true;
   return settings;
 }
 
@@ -227,7 +275,7 @@ function showPlaylist(messageDiv, onlyifopen)
   for(var i=0; i<playlist.length; i++)
   {
     var p=playlist[i];
-    
+
     var pDiv=document.createElement('div');
     pDiv.setAttribute('playlistItem', JSON.stringify(p));
     if(i===parseInt(playlistIndex))
@@ -235,7 +283,7 @@ function showPlaylist(messageDiv, onlyifopen)
       pDiv.setAttribute('style', 'background: rgba(0,128,128,0.5);');
     }
     div.appendChild(pDiv);
-    
+
     var span=document.createElement('span');
     span.setAttribute('style', baseHeaderStyle+headersStyle[0]);
     pDiv.appendChild(span);
@@ -257,24 +305,24 @@ function showPlaylist(messageDiv, onlyifopen)
     a.innerHTML = 'Down';
     a.href='javascript:void(0);';
     a.addEventListener('click', movePlaylistDown.bind(undefined, messageDiv, i), false);
-    
+
     var span=document.createElement('span');
     span.setAttribute('style', baseHeaderStyle+headersStyle[1]);
     pDiv.appendChild(span);
     span.innerHTML = i+1;
-    
+
     var span=document.createElement('a');
     span.setAttribute('style', baseHeaderStyle+headersStyle[2]);
     pDiv.appendChild(span);
     span.innerHTML = p.track;
     span.href='javascript:void(0);';
     span.addEventListener('click', playIndex.bind(undefined, messageDiv, i), false);
-    
+
     var span=document.createElement('span');
     span.setAttribute('style', baseHeaderStyle+headersStyle[3]);
     pDiv.appendChild(span);
     span.innerHTML = p.artist === '' ? '<Unknown>':p.artist;
-    
+
     var span=document.createElement('span');
     span.setAttribute('style', baseHeaderStyle+headersStyle[4]);
     pDiv.appendChild(span);
@@ -294,7 +342,7 @@ function movePlaylistUp(messageDiv, index)
 {
   if(index === 0)
     return;
-  
+
   var playlist=getPlaylist();
   playlist.splice(index-1, 0, playlist.splice(index, 1)[0]);
   if(index === parseInt(getPlaylistIndex()))
@@ -308,7 +356,7 @@ function movePlaylistDown(messageDiv, index)
   var playlist=getPlaylist();
   if(index > playlist.length-2)
     return;
-  
+
   playlist.splice(index+1, 0, playlist.splice(index, 1)[0]);
   if(index === parseInt(getPlaylistIndex()))
     setPlaylistIndex(index+1);
@@ -415,6 +463,9 @@ function playPlayer(messageDiv, response)
 function playerReady(event)
 {
   event.target.playVideo();
+  var settings=getSettings();
+  if(settings.quality && settings.quality.length > '')
+    event.target.setPlaybackQuality(settings.quality);
 }
 
 function playerStateChanged(messageDiv, event)
@@ -423,6 +474,14 @@ function playerStateChanged(messageDiv, event)
   {
     setPlaylistIndex(parseInt(getPlaylistIndex())+1);
     playPlaylistVideo(messageDiv);
+  }
+  if(event.data == YT.PlayerState.BUFFERING)
+  {
+    var settings=getSettings();
+    if(settings.quality && settings.quality.length > '')
+      event.target.setPlaybackQuality(settings.quality);
+    if(settings.volume)
+      event.target.setVolume(settings.volume);
   }
 }
 
@@ -456,6 +515,7 @@ function savePlaylist(playlist)
 
 function loadTorrent()
 {
+  var settings=getSettings();
   var h2 = document.getElementsByTagName('h2')[0];
   var artist = h2.getElementsByTagName('a');
   if(artist.length > 0)
@@ -480,7 +540,7 @@ function loadTorrent()
     tracks[0].parentNode.insertBefore(s, tracks[0]);
     tracks=tracks[0].getElementsByTagName('li');
 
-    if(useYoutubeAPI)
+    if(settings.useYoutubeAPI)
     {
       var a=document.createElement('a');
       s.appendChild(document.createTextNode(' '));
@@ -541,6 +601,7 @@ function getDiscogTracks(tracks)
 
 function doTracks(artist, tracks)
 {
+  var settings=getSettings();
   for(var i=0; i<tracks.length; i++)
   {
     var t=tracks[i];
@@ -554,7 +615,7 @@ function doTracks(artist, tracks)
     a.addEventListener('click', preview.bind(undefined, a, t, span, artist, track, i), false);
     t.appendChild(a);
     t.appendChild(document.createTextNode(' '));
-    if(useYoutubeAPI)
+    if(settings.useYoutubeAPI)
     {
       var a=document.createElement('a');
       a.href='javascript:void(0);';
@@ -604,6 +665,7 @@ function toggle(div)
 
 function makePreview(getTracksFunc)
 {
+  var settings=getSettings();
   var div=document.createElement('div');
   div.setAttribute('class', 'box torrent_description');
   var before=document.getElementsByClassName('torrent_description')[0];
@@ -628,7 +690,7 @@ function makePreview(getTracksFunc)
   body.appendChild(a);
   var tracks=getTracksFunc();
 
-  if(useYoutubeAPI)
+  if(settings.useYoutubeAPI)
   {
     var a=document.createElement('a');
     body.appendChild(document.createTextNode(' '));
@@ -649,7 +711,7 @@ function makePreview(getTracksFunc)
     result.push(li);
   }
 
-  if(useYoutubeAPI)
+  if(settings.useYoutubeAPI)
   {
     var h2 = document.getElementsByTagName('h2')[0];
     var artist = h2.getElementsByTagName('a');
@@ -753,14 +815,14 @@ function previewing(t, span, response)
 
 function addEmbed(t, span, videoId)
 {
-
+  var settings=getSettings();
   var iframe = t.getElementsByTagName('iframe');
   if(iframe.length === 0)
   {
     var prev=document.getElementById('previewIframe');
     if(prev)
       prev.parentNode.removeChild(prev);
-    if(useYoutubeAPI)
+    if(settings.useYoutubeAPI)
     {
       iframe=document.createElement('div');
       iframe.setAttribute('id', 'previewIframe');
@@ -795,6 +857,9 @@ function addEmbed(t, span, videoId)
 function previewReady(event)
 {
   event.target.playVideo();
+  var settings=getSettings();
+  if(settings.quality && settings.quality.length > '')
+    event.target.setPlaybackQuality(settings.quality);
 }
 
 function previewStateChanged(event)
@@ -806,6 +871,14 @@ function previewStateChanged(event)
     var index=parseInt(as[0].parentNode.parentNode.getAttribute('index'))+1;
     if(index < as.length)
       as[index].click();
+  }
+  if(event.data == YT.PlayerState.BUFFERING)
+  {
+    var settings=getSettings();
+    if(settings.quality && settings.quality.length > '')
+      event.target.setPlaybackQuality(settings.quality);
+    if(settings.volume)
+      event.target.setVolume(settings.volume);
   }
 }
 
