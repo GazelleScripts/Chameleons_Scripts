@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH Preview Tracks
-// @version      1.8
+// @version      1.9
 // @description  Embed youtube clips for the tracks of a torrent group
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/torrents.php?id=*
@@ -755,7 +755,7 @@ function getTracks(offset)
     var l=f.toLowerCase().indexOf(artist.toLowerCase());
     if( l != -1)
       f=f.substr(0, l)+f.substr(l+artist.length);
-    f = f.split('(')[0];
+    //f = f.split('(')[0];
     files.push(f);
   }
   if(files.length === 0)
