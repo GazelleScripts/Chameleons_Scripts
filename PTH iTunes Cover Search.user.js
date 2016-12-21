@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH iTunes Cover Search
-// @version      1.6
+// @version      1.7
 // @description  Search iTunes for cover art
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/*
@@ -136,12 +136,19 @@ function showUpload()
   div.appendChild(optionsDiv);
   a.innerHTML='Get image from iTunes';
   a.href='javascript:void(0);';
-  a.addEventListener('click', getAlbum.bind(undefined, country, search, image, imageTd, messageDiv), false);
+  a.addEventListener('click', getAlbumUpload.bind(undefined, album, artist, country, search, image, imageTd, messageDiv), false);
 
   var imageDiv=document.createElement('div');
   imageDiv.setAttribute('id', 'iTunesImageDiv');
   imageDiv.setAttribute('style', 'text-align: center;');
   div.appendChild(imageDiv);
+}
+
+function getAlbumUpload(album, artist, country, search, image, imageTd, messageDiv)
+{
+  if(search.value.length === 0)
+    search.value=(artist.value+' '+album.value).trim();
+  getAlbum(country, search, image, imageTd, messageDiv);
 }
 
 function getAlbum(country, search, im, td, messageDiv)
