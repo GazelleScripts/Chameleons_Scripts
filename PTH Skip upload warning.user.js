@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH Skip upload warning
-// @version      0.72
+// @version      0.73
 // @description  Skip the warning page generated when uploading a torrent without the 'source' option set
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/upload.php*
@@ -85,10 +85,10 @@ function downloadTorrents(list, index)
   if(index >= list.length)
     return;
 
-  var aLink=document.getElementById('torrent'+download[index]).getElementsByTagName('a')[0];
+  var aLink=document.getElementById('torrent'+list[index]).getElementsByTagName('a')[0];
   //aLink.setAttribute('target', '_blank');
   aLink.click();
-  debug("link "+index+": "+download[index]);
+  debug("link "+index+": "+list[index]);
   window.setTimeout(downloadTorrents.bind(undefined, list, index+1), 500);
 }
 
