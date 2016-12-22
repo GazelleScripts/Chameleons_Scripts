@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH Autofill from torrent
-// @version      0.6
+// @version      0.61
 // @description  Attempt to read the .torrent file and fill in the artist and album
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/upload.php*
@@ -127,6 +127,8 @@ function fileAdded(event)
   {
     media.selectedIndex=9;
   }
+  else
+    media.selectedIndex=1;
   
   return;
   
