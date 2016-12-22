@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH Autofill from torrent
-// @version      0.8
+// @version      0.9
 // @description  Attempt to read the .torrent file and fill in the artist and album
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/upload.php*
@@ -170,13 +170,58 @@ function readFile(event)
   var desc=document.getElementById('album_desc');
   if(desc.value.length !== 0)
     return;
+  var extensions=[];
+  var tracks=[];
   for(var i=1; i<paths.length-1; i++)
   {
     var p=paths[i];
     p=p.substring(p.indexOf(':')+1).split('eed6:length')[0];
-    p=p.substring(0, p.lastIndexOf('.'));
+    var extension=p.substring(p.lastIndexOf('.'));
+    var hasE=false;
+    for(var j=0; j<extensions.length; j++)
+    {
+      if(extension == extensions[j].extension)
+      {
+        hasE=true;
+        extensions[j].count++;
+      }
+    }
+    if(!hasE)
+    {
+      extensions.push({extension:extension, count:1});
+    }
+    tracks.push({track:p, extension:extension});
+    //p=p.substring(0, p.lastIndexOf('.'));
     //console.log(p);
-    desc.value+='\r'+p;
+    //desc.value+='\r'+p;
+  }
+  var highCount=0;
+  var index=-1;
+  for(var i=0; i<extensions.length; i++)
+  {
+    if(extensions[i].count > highCount)
+    {
+      highCount=extensions[i].count;
+      index=i;
+    }
+  }
+  var finalTracks=[];
+  for(var i=0; i<tracks.length; i++)
+  {
+    var t=tracks[i];
+    if(t.extension != extensions[index].extension)
+      continue;
+    finalTracks.push(t.track);
+  }
+  finalTracks.sort();
+  
+  desc.value='Track list:';
+  for(var i=0; i<finalTracks.length; i++)
+  {
+    var f=finalTracks[i];
+    f=f.replace(/^[0-9][0-9]?[0-9]?\.?[ -_]?[ -_]?[ -_]/, '');
+    f=f.substring(0, f.lastIndexOf('.'));
+    desc.value+='\r[#]'+f;
   }
 }
 
