@@ -9,12 +9,35 @@
 
 (function() {
   'use strict';
+  
+  var a=document.createElement('a');
+  a.innerHTML = 'Auto-fill from torrent: On';
+  a.href='javascript:void(0);';
+  a.addEventListener('click', toggle.bind(undefined, a), false);
+  a.setAttribute('style', 'display: block; text-align: center;');
+  var before=document.getElementById('upload_table');
+  before.parentNode.insertBefore(a, before);
 
-  document.getElementById('file').addEventListener('change', fileAdded, false);
+  document.getElementById('file').addEventListener('change', fileAdded.bind(undefined, a), false);
+  
 })();
 
-function fileAdded(event)
+function toggle(a)
 {
+  if(a.innerHTML.indexOf('On') != -1)
+  {
+    a.innerHTML=a.innerHTML.replace('On', 'Off');
+  }
+  else
+  {
+    a.innerHTML=a.innerHTML.replace('Off', 'On');
+  }
+}
+
+function fileAdded(a, event)
+{
+  if(a.innerHTML.indexOf('Off') != -1)
+    return;
   var file=event.target.files[0];
   if(!file)
     return;
@@ -26,7 +49,7 @@ function fileAdded(event)
   else
     artist=artist[0];
   document.getElementById('artist').value=artist;
-  var album=spl[1].split(' (')[0].split(' [')[0].replace(/ - [0-9][0-9][0-9][0-9]/, '').replace(/.torrent$/, '');
+  var album=spl[1].split(' (')[0].split(' [')[0].split(' {')[0].replace(/ - [0-9][0-9][0-9][0-9]/, '').replace(/.torrent$/, '');
   document.getElementById('title').value=album;
   
   var yadg=document.getElementById('yadg_input');
@@ -130,6 +153,10 @@ function fileAdded(event)
   else
     media.selectedIndex=1;
   
+  triggerChange(format);
+  triggerChange(bitrate);
+  triggerChange(media);
+  
   return;
   
   var r=new FileReader();
@@ -141,4 +168,11 @@ function readFile(event)
 {
   var contents=event.target.result;
   console.log(contents);
+}
+
+function triggerKeyup(input)
+{
+  var evt = document.createEvent("HTMLEvents");
+  evt.initEvent("change", false, true);
+  input.dispatchEvent(evt);
 }
