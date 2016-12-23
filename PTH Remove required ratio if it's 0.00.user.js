@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH Remove required ratio if it's 0.00
-// @version      0.3
+// @version      0.31
 // @description  Remove required ratio either when it's 0.00 or always
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/*
@@ -12,6 +12,9 @@
 
   debug('start debug');
   debug('threadid: '+(window.location.href.indexOf('threadid=2646') != -1));
+  debug('user.php?id=: '+(window.location.href.indexOf('user.php?id=') != -1));
+  try
+  {
   var headerRatio = document.getElementById('stats_required');
   if(headerRatio.textContent.replace(/[\t,\n]/g, "") == "Required:0.00" || settings.hideAlways)
     headerRatio.style.display = 'none';
@@ -21,8 +24,13 @@
     if(stats.textContent == "Required Ratio: 0.00" || settings.hideAlways)
       stats.style.display = 'none';
   }
-  else if(window.location.href.indexOf('threadid=2646') != -1)
+  if(window.location.href.indexOf('threadid=2646') != -1)
     showSettings();
+  }
+  catch(error)
+  {
+    debug("Error: "+error.message);
+  }
 })();
 
 function showSettings()
