@@ -11,7 +11,7 @@
   'use strict';
 
   debug('start debug');
-  debug('threadid: '+window.location.href.indexOf('threadid=2646'));
+  debug('threadid: '+(window.location.href.indexOf('threadid=2646') != -1));
   var headerRatio = document.getElementById('stats_required');
   if(headerRatio.textContent.replace(/[\t,\n]/g, "") == "Required:0.00" || settings.hideAlways)
     headerRatio.style.display = 'none';
@@ -48,6 +48,13 @@ function showSettings()
   a.addEventListener('click', changeSettings.bind(undefined, a, div), false);
   div.appendChild(a);
   div.appendChild(document.createElement('br'));
+
+  var a=document.createElement('a');
+  a.href='javascript:void(0);';
+  a.innerHTML = 'Debug: '+(settings.debug ? 'On':'Off');
+  a.addEventListener('click', changeSettings.bind(undefined, a, div), false);
+  div.appendChild(a);
+  div.appendChild(document.createElement('br'));
 }
 
 function changeSettings(a, div)
@@ -62,6 +69,15 @@ function changeSettings(a, div)
     }
     else
       settings.hideAlways = false;
+  }
+  if(a == as[1])
+  {
+    if(as[1].innerHTML.indexOf('Off') != -1) 
+    {
+      settings.debug = true;
+    }
+    else
+      settings.debug = false;
   }
 
   window.localStorage.removeRequiredRatioSettings = JSON.stringify(settings);
