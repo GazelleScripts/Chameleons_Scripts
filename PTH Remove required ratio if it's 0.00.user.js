@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH Remove required ratio if it's 0.00
-// @version      0.2
+// @version      0.3
 // @description  Remove required ratio either when it's 0.00 or always
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/*
@@ -10,6 +10,8 @@
 (function() {
   'use strict';
 
+  debug('start debug');
+  debug('threadid: '+window.location.href.indexOf('threadid=2646'));
   var headerRatio = document.getElementById('stats_required');
   if(headerRatio.textContent.replace(/[\t,\n]/g, "") == "Required:0.00" || settings.hideAlways)
     headerRatio.style.display = 'none';
@@ -25,7 +27,9 @@
 
 function showSettings()
 {
+  debug('in settings');
   var div=document.getElementById('chameleonSettings');
+  debug('div exists: '+(!(!div)));
   if(!div)
   {
     var before = document.getElementsByClassName('forum_post')[0];
@@ -64,12 +68,31 @@ function changeSettings(a, div)
   showSettings();
 }
 
+function debug(text)
+{
+  var settings=getSettings();
+  if(!settings.debug)
+    return;
+
+  var debugDiv=document.getElementById('ChameleonDebug');
+  if(!debugDiv)
+  {
+    debugDiv=document.createElement('div');
+    document.body.appendChild(debugDiv);
+    debugDiv.setAttribute('id', 'ChameleonDebug');
+    debugDiv.setAttribute('style', 'position: absolute; top: 50px; left: 50px; width: '+(document.body.clientWidth-100)+'px; background: rgba(0,0,0,0.7); text-align: center; font-size: 2em;');
+  }
+  var d=document.createElement('div');
+  d.innerHTML=text;
+  debugDiv.appendChild(d);
+}
+
 function getSettings()
 {
   var settings = window.localStorage.removeRequiredRatioSettings;
   if(!settings)
   {
-    settings = {hideAlways:false};
+    settings = {hideAlways:false, debug:false};
   }
   else
     settings = JSON.parse(settings);
