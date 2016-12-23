@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH User tagging
-// @version      0.1
+// @version      0.11
 // @description  Tag, ignore, highlight, and change avatars for users on PTH
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/*
@@ -196,6 +196,7 @@ function addTags()
     {
       var a=document.createElement('a');
       var hr=document.createElement('hr');
+      hr.setAttribute('title', username);
       a.appendChild(hr);
       a.setAttribute('class', 'hardIgnoreLink');
       a.href=postTable.getElementsByTagName('strong')[0].getElementsByTagName('a')[0].href;
