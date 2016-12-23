@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH Remove required ratio if it's 0.00
-// @version      0.31
+// @version      0.32
 // @description  Remove required ratio either when it's 0.00 or always
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/*
@@ -15,17 +15,18 @@
   debug('user.php?id=: '+(window.location.href.indexOf('user.php?id=') != -1));
   try
   {
-  var headerRatio = document.getElementById('stats_required');
-  if(headerRatio.textContent.replace(/[\t,\n]/g, "") == "Required:0.00" || settings.hideAlways)
-    headerRatio.style.display = 'none';
-  if(window.location.href.indexOf("user.php?id=") != -1)
-  {
-    var stats=document.getElementsByClassName('stats')[0].getElementsByTagName('li')[5];
-    if(stats.textContent == "Required Ratio: 0.00" || settings.hideAlways)
-      stats.style.display = 'none';
-  }
-  if(window.location.href.indexOf('threadid=2646') != -1)
-    showSettings();
+    var settings=getSettings();
+    var headerRatio = document.getElementById('stats_required');
+    if(headerRatio.textContent.replace(/[\t,\n]/g, "") == "Required:0.00" || settings.hideAlways)
+      headerRatio.style.display = 'none';
+    if(window.location.href.indexOf("user.php?id=") != -1)
+    {
+      var stats=document.getElementsByClassName('stats')[0].getElementsByTagName('li')[5];
+      if(stats.textContent == "Required Ratio: 0.00" || settings.hideAlways)
+        stats.style.display = 'none';
+    }
+    if(window.location.href.indexOf('threadid=2646') != -1)
+      showSettings();
   }
   catch(error)
   {
