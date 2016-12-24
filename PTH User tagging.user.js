@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH User tagging
-// @version      0.3
+// @version      0.35
 // @description  Tag, ignore, highlight, and change avatars for users on PTH
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/*
@@ -10,7 +10,7 @@
 (function() {
   'use strict';
 
-  window.setTimeout(checkHeight.bind(undefined, document.body.clientHeight, document.body.clientHeight), 800);
+  window.setTimeout(checkHeight.bind(undefined, document.body.clientHeight), 800);
 
   if(window.location.href.indexOf('user.php?id=') != -1)
   {
@@ -60,15 +60,14 @@
 })();
 
 
-function checkHeight(height, height2)
+function checkHeight(height)
 {
   if(height != document.body.clientHeight)
   {
-    if(height2 != document.body.clientHeight)
       pageResized();
   }
 
-  window.setTimeout(checkHeight.bind(undefined, height, document.body.clientHeight), 800);
+  window.setTimeout(checkHeight.bind(undefined, document.body.clientHeight), 800);
 }
 /*
 function addTagLinks(avatar)
@@ -143,7 +142,9 @@ function resetTags()
       var img=avatar.getElementsByTagName('img')[0];
       if(img)
       {
-        img.src=img.getAttribute('originalAvatar');
+        var orig=img.getAttribute('originalAvatar');
+        if(orig)
+          img.src=img.getAttribute('originalAvatar');
       }
     }
     u.setAttribute('style', '');
@@ -212,7 +213,7 @@ function addTags()
       var left=place.left+window.scrollX-width-20;
       if(left<0)
         left=0;
-      var style='position: absolute; z-index: 50000000; top: '+(place.top+window.scrollY)+'px; left: '+left+'px; max-width: '+width+'px; text-align: center; color: white; background: rgba(20,20,20,0.7); border-radius: 20px 0px 0px 20px;';
+      var style='position: absolute; z-index: 1001; top: '+(place.top+window.scrollY)+'px; left: '+left+'px; max-width: '+width+'px; text-align: center; color: white; background: rgba(20,20,20,0.7); border-radius: 20px 0px 0px 20px;';
       style+='font-size: large; box-shadow: inset '+(user.postHighlight ? user.postHighlight : 'black')+' 0 0 20px 0; padding: 10px;';
       div.setAttribute('style', style);
       document.body.appendChild(div);
