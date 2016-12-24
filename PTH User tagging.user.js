@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH User tagging
-// @version      0.11
+// @version      0.2
 // @description  Tag, ignore, highlight, and change avatars for users on PTH
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/*
@@ -11,7 +11,7 @@
   'use strict';
 
   window.setTimeout(checkHeight.bind(undefined, document.body.clientHeight), 800);
-  
+
   if(window.location.href.indexOf('user.php?id=') != -1)
   {
     var username=document.getElementsByTagName('h2')[0].getElementsByTagName('a')[0].textContent;
@@ -22,6 +22,28 @@
     document.getElementsByClassName('linkbox')[0].appendChild(a);
   }
 
+  var posts=document.getElementsByClassName('forum_post');
+  for(var i=0; i<posts.length-1; i++)
+  {
+    var p=posts[i];
+    var links=p.getElementsByTagName('td')[0];
+    var username=p.getElementsByTagName('strong')[0].getElementsByTagName('a')[0].textContent;
+
+    var a=document.createElement('a');
+    a.href='javascript:void(0);';
+    a.innerHTML='Tag';
+    a.setAttribute('class', 'brackets');
+    a.addEventListener('click', openTags.bind(undefined, username, p), false);
+    links.appendChild(document.createTextNode(' - '));
+    links.appendChild(a);
+
+    var img=p.getElementsByTagName('img')[0];
+    if(img)
+    {
+      img.setAttribute('originalAvatar', img.src);
+    }
+  }
+  /*
   var avatars=document.getElementsByClassName('avatar');
   for(var i=0; i<avatars.length; i++)
   {
@@ -32,19 +54,20 @@
     {
       img.setAttribute('originalAvatar', img.src);
     }
-  }
+  }*/
 
   addTags();
 })();
+
 
 function checkHeight(height)
 {
   if(height != document.body.clientHeight)
     pageResized();
-  
+
   window.setTimeout(checkHeight.bind(undefined, document.body.clientHeight), 800);
 }
-
+/*
 function addTagLinks(avatar)
 {
   var tags=getTags();
@@ -65,7 +88,7 @@ function addTagLinks(avatar)
   var style='position: absolute; z-index: 50000000; top: '+(place.top+window.scrollY)+'px; left: '+(place.left+window.scrollX)+'px; width: '+avatar.clientWidth+'px;';
   style+='text-align: center; color: blue; background: rgba(200,200,200,0.8); border-radius: 0px 0px 10px 10px;';
   a.setAttribute('style', style);
-                 
+
   a.innerHTML = 'Show user tags';
   a.href='javascript:void(0);';
   a.addEventListener('click', openTags.bind(undefined, username, postTable), false);
@@ -75,10 +98,10 @@ function addTagLinks(avatar)
   avatar.addEventListener('mouseover', mouseOver.bind(undefined, a), false);
   avatar.addEventListener('mouseout', mouseOut.bind(undefined, avatar, a), false);
 }
-
+*/
 function pageResized()
 {
-  var tagLinks=document.getElementsByClassName('tagLink');
+  /*var tagLinks=document.getElementsByClassName('tagLink');
   for(var i=0; i<tagLinks.length; i++)
   {
     var t=tagLinks[i];
@@ -91,7 +114,7 @@ function pageResized()
     style+='text-align: center; color: blue; background: rgba(200,200,200,0.8); border-radius: 0px 0px 10px 10px;';
     t.setAttribute('style', style);
     t.style.display='none';
-  }
+  }*/
 
   resetTags();
   addTags();
@@ -99,23 +122,26 @@ function pageResized()
 
 function resetTags()
 {
-  var avatars=document.getElementsByClassName('avatar');
-  for(var i=0; i<avatars.length; i++)
+  var posts=document.getElementsByClassName('forum_post');
+  for(var i=0; i<posts.length-1; i++)
   {
-    var avatar=avatars[i];
+    var p=posts[i];
+    var avatar=p.getElementsByClassName('avatar')[0];
 
-    var postTable=avatar.parentNode;
-    while(postTable.tagName != 'TABLE')
-      postTable=postTable.parentNode;
+    var postTable=p;
+
     if(postTable.getAttribute('id') == 'preview_wrap_0')
       continue;
     var u=postTable.getElementsByTagName('strong')[0].getElementsByTagName('a')[0];
     var username=u.textContent;
 
-    var img=avatar.getElementsByTagName('img')[0];
-    if(img)
+    if(avatar)
     {
-      img.src=img.getAttribute('originalAvatar');
+      var img=avatar.getElementsByTagName('img')[0];
+      if(img)
+      {
+        img.src=img.getAttribute('originalAvatar');
+      }
     }
     u.setAttribute('style', '');
     postTable.setAttribute('style', '');
@@ -134,21 +160,21 @@ function resetTags()
 
 function addTags()
 {
-  var avatars=document.getElementsByClassName('avatar');
-  for(var i=0; i<avatars.length; i++)
+  var posts=document.getElementsByClassName('forum_post');
+  for(var i=0; i<posts.length-1; i++)
   {
-    var avatar=avatars[i];
+    var p=posts[i];
+    var avatar=p.getElementsByClassName('avatar')[0];
 
-    var postTable=avatar.parentNode;
-    while(postTable.tagName != 'TABLE')
-      postTable=postTable.parentNode;
+    var postTable=p;
+
     if(postTable.getAttribute('id') == 'preview_wrap_0')
       continue;
     var u=postTable.getElementsByTagName('strong')[0].getElementsByTagName('a')[0];
     var username=u.textContent;
 
     var user=getUser(username)[0];
-    if(user.replacementAvatar)
+    if(user.replacementAvatar && avatar)
     {
       avatar.getElementsByTagName('img')[0].src=user.replacementAvatar;
     }
@@ -170,7 +196,15 @@ function addTags()
       var id=postTable.getAttribute('id').split('post')[1];
       div.setAttribute('id', 'tag'+id);
       div.innerHTML = user.tag.replace(/\n/g,'<br />');
-      var place = avatar.getBoundingClientRect();
+      var first;
+      if(!avatar)
+      {
+        avatar=postTable;
+        first=avatar;
+      }
+      else
+        first=avatar.firstElementChild;
+      var place = postTable.getBoundingClientRect();
       var width=300;
       var left=place.left+window.scrollX-width-20;
       if(left<0)
@@ -179,7 +213,7 @@ function addTags()
       style+='font-size: large; box-shadow: inset '+(user.postHighlight ? user.postHighlight : 'black')+' 0 0 20px 0; padding: 10px;';
       div.setAttribute('style', style);
       document.body.appendChild(div);
-      var avatarHeight=avatar.firstElementChild.clientHeight;
+      var avatarHeight=first.clientHeight;
       var top=place.top+window.scrollY+((avatarHeight-div.clientHeight)/2);
       div.style.top=top+'px';
       if(div.clientWidth < width)
@@ -344,6 +378,7 @@ function saveAndClose(div, username, table)
   div.parentNode.removeChild(div);
 }
 
+/*
 function mouseOver(a)
 {
   a.style.display = 'initial';
@@ -354,7 +389,7 @@ function mouseOut(avatar, a, event)
   if(event.relatedTarget == avatar || event.relatedTarget == a)
     return;
   a.style.display = 'none';
-}
+}*/
 
 function getUser(username)
 {
