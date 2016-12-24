@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH User tagging
-// @version      0.35
+// @version      0.4
 // @description  Tag, ignore, highlight, and change avatars for users on PTH
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/*
@@ -254,7 +254,7 @@ function openTags(username, postTable)
     div=document.createElement('div');
     div.setAttribute('id', 'chameleonTagsDiv');
     document.body.appendChild(div);
-    div.setAttribute('style', 'position: fixed; top: 20px; margin: auto; left: 0; right: 0; text-align: center; background: rgba(0,0,0,0.7); color: white; width: 80%;');
+    div.setAttribute('style', 'position: fixed; top: 20px; margin: auto; left: 0; right: 0; text-align: center; background: rgba(0,0,0,0.7); color: white; width: 80%; z-index: 1000;');
   }
   div.innerHTML = '<h2>'+username+'\'s Tags<br />';
 
