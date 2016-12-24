@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH User tagging
-// @version      0.4
+// @version      0.5
 // @description  Tag, ignore, highlight, and change avatars for users on PTH
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/*
@@ -64,7 +64,7 @@ function checkHeight(height)
 {
   if(height != document.body.clientHeight)
   {
-      pageResized();
+    pageResized();
   }
 
   window.setTimeout(checkHeight.bind(undefined, document.body.clientHeight), 800);
@@ -199,33 +199,43 @@ function addTags()
       var div=document.createElement('div');
       var id=postTable.getAttribute('id').split('post')[1];
       div.setAttribute('id', 'tag'+id);
-      div.innerHTML = user.tag.replace(/\n/g,'<br />');
-      var first;
-      if(!avatar)
+      div.innerHTML = user.tag.replace(/\n/g,'<br />')+' ';
+      if(user.showTagInHeader)
       {
-        avatar=postTable;
-        first=avatar;
+        var before=document.getElementById('bar'+id).firstElementChild;
+        before.parentNode.insertBefore(div, before);
+        div.setAttribute('style', 'display: inline-block; margin-right: 5px;');
+        div.setAttribute('class', 'r10');
       }
       else
-        first=avatar.firstElementChild;
-      var place = postTable.getBoundingClientRect();
-      var width=300;
-      var left=place.left+window.scrollX-width-20;
-      if(left<0)
-        left=0;
-      var style='position: absolute; z-index: 1001; top: '+(place.top+window.scrollY)+'px; left: '+left+'px; max-width: '+width+'px; text-align: center; color: white; background: rgba(20,20,20,0.7); border-radius: 20px 0px 0px 20px;';
-      style+='font-size: large; box-shadow: inset '+(user.postHighlight ? user.postHighlight : 'black')+' 0 0 20px 0; padding: 10px;';
-      div.setAttribute('style', style);
-      document.body.appendChild(div);
-      var avatarHeight=first.clientHeight;
-      var top=place.top+window.scrollY+((avatarHeight-div.clientHeight)/2);
-      div.style.top=top+'px';
-      if(div.clientWidth < width)
       {
-        left=place.left+window.scrollX-div.clientWidth;
+        var first;
+        if(!avatar)
+        {
+          avatar=postTable;
+          first=avatar;
+        }
+        else
+          first=avatar.firstElementChild;
+        var place = postTable.getBoundingClientRect();
+        var width=300;
+        var left=place.left+window.scrollX-width-20;
         if(left<0)
           left=0;
-        div.style.left=left+'px';
+        var style='position: absolute; z-index: 1001; top: '+(place.top+window.scrollY)+'px; left: '+left+'px; max-width: '+width+'px; text-align: center; color: white; background: rgba(20,20,20,0.7); border-radius: 20px 0px 0px 20px;';
+        style+='font-size: large; box-shadow: inset '+(user.postHighlight ? user.postHighlight : 'black')+' 0 0 20px 0; padding: 10px;';
+        div.setAttribute('style', style);
+        document.body.appendChild(div);
+        var avatarHeight=first.clientHeight;
+        var top=place.top+window.scrollY+((avatarHeight-div.clientHeight)/2);
+        div.style.top=top+'px';
+        if(div.clientWidth < width)
+        {
+          left=place.left+window.scrollX-div.clientWidth;
+          if(left<0)
+            left=0;
+          div.style.left=left+'px';
+        }
       }
     }
     if(user.softIgnore)
@@ -306,6 +316,14 @@ function openTags(username, postTable)
 
   var a=document.createElement('a');
   div.appendChild(a);
+  a.innerHTML = 'Show tag in header: '+(user.showTagInHeader ? 'On' : 'Off');
+  a.href='javascript:void(0);';
+  a.addEventListener('click', changeTags.bind(undefined, div, username, postTable, a), false);
+
+  div.appendChild(document.createElement('br'));
+
+  var a=document.createElement('a');
+  div.appendChild(a);
   a.innerHTML = 'Soft ignore: '+(user.softIgnore ? 'On' : 'Off');
   a.href='javascript:void(0);';
   a.addEventListener('click', changeTags.bind(undefined, div, username, postTable, a), false);
@@ -352,11 +370,18 @@ function changeTags(div, username, table, a)
   if(as[1] == a)
   {
     if(a.innerHTML.indexOf('On') != -1)
+      user.showTagInHeader=false;
+    else
+      user.showTagInHeader=true;
+  }
+  if(as[2] == a)
+  {
+    if(a.innerHTML.indexOf('On') != -1)
       user.softIgnore=false;
     else
       user.softIgnore=true;
   }
-  if(as[2] == a)
+  if(as[3] == a)
   {
     if(a.innerHTML.indexOf('On') != -1)
       user.hardIgnore=false;
