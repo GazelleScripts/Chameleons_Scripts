@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH User tagging
-// @version      0.2
+// @version      0.21
 // @description  Tag, ignore, highlight, and change avatars for users on PTH
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/*
@@ -26,7 +26,7 @@
   for(var i=0; i<posts.length-1; i++)
   {
     var p=posts[i];
-    var links=p.getElementsByTagName('td')[0];
+    var links=p.getElementsByTagName('td')[0].firstElementChild;
     var username=p.getElementsByTagName('strong')[0].getElementsByTagName('a')[0].textContent;
 
     var a=document.createElement('a');
