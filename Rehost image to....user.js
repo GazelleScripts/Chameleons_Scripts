@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Rehost image to...
-// @version      1.0
+// @version      1.1
 // @description  Rehost images to a whitelisted site by ctrl+shift+clicking them
 // @author       Chameleon
 // @include      *
@@ -42,6 +42,13 @@ function showSettings(message)
   a.href='javascript:void(0);';
   a.innerHTML = 'Use image host: '+settings.site;
   a.addEventListener('click', changeSite.bind(undefined, a, div), false);
+  div.appendChild(a);
+  div.appendChild(document.createElement('br'));
+
+  var a=document.createElement('a');
+  a.href='javascript:void(0);';
+  a.innerHTML = 'Debug: '+(settings.debug ? 'On':'Off');
+  a.addEventListener('click', changeA.bind(undefined, a, div), false);
   div.appendChild(a);
   div.appendChild(document.createElement('br'));
 
@@ -97,6 +104,20 @@ function gotAPIKey(input, span, div, response)
   changeSettings(div, 0, "Successfully added API Key");
 }
 
+function changeA(a, div)
+{
+  if(a.innerHTML.indexOf('On') != -1)
+  {
+    a.innerHTML=a.innerHTML.replace('On', 'Off');
+  }
+  else 
+  {
+    a.innerHTML=a.innerHTML.replace('Off', 'On');
+  }
+
+  changeSettings(div);
+}
+
 function changeSite(a, div)
 {
   if(a.innerHTML.indexOf('imgur.com') != -1)
@@ -119,6 +140,13 @@ function changeSettings(div)
     settings.site = 'imgur.com';
   else if(as[0].innerHTML.indexOf('ptpimg.me') != -1)
     settings.site = 'ptpimg.me';
+
+  if(as[1].innerHTML.indexOf('On') != -1)
+  {
+    settings.debug=true;
+  }
+  else
+    settings.debug=false;
 
   var inputs=div.getElementsByTagName('input');
   settings.apiKey = inputs[0].value;
@@ -147,7 +175,7 @@ function getSettings()
 function rehost(image, event)
 {
   var alreadySent = image.getAttribute('sent');
-  //alert("shift: "+event.shiftKey+", ctrl: "+event.ctrlKey+", cmd: "+event.metaKey+", alreadySent: "+alreadySent);
+  debug("shift: "+event.shiftKey+", ctrl: "+event.ctrlKey+", cmd: "+event.metaKey+", alreadySent: "+alreadySent);
   if(event.shiftKey && (event.ctrlKey || event.metaKey) && alreadySent != "true")
   {
     event.preventDefault();
@@ -155,7 +183,7 @@ function rehost(image, event)
     var a=document.createElement('a');
     var imagePlace = image.getBoundingClientRect();
     a.setAttribute('style', 'position: absolute; z-index: 50000000; top: '+(imagePlace.top+window.scrollY)+'px; left: '+(imagePlace.left+window.scrollX)+'px; width: '+image.width+'px; text-align: center; color: blue; background: rgba(255,255,255,0.6); border-radius: 0px 0px 10px 10px;');
-    debug({site:'-'}, a, "top: "+(imagePlace.top+window.scrollY)+"px<br />left: "+(imagePlace.left+window.scrollX)+"px<br />width: "+image.width+"px");
+    debug("top: "+(imagePlace.top+window.scrollY)+"px<br />left: "+(imagePlace.left+window.scrollX)+"px<br />width: "+image.width+"px");
     a.innerHTML = 'Rehosting';
     document.body.appendChild(a);
 
@@ -170,7 +198,6 @@ function rehost(image, event)
 function doRehost(a, imageSrc)
 {
   var settings = getSettings();
-  debug(settings, a, imageSrc);
   if(settings.site == 'imgur.com')
   {
     var formData = new FormData();
@@ -209,9 +236,11 @@ function doRehost(a, imageSrc)
   }
 }
 
-function debug(settings, a, imageSrc)
+function debug(message)
 {
-  return;
+  var settings=getSettings();
+  if(!settings.debug)
+    return;
   var div=document.getElementById('rehostDebug');
   if(!div)
   {
@@ -220,12 +249,11 @@ function debug(settings, a, imageSrc)
     div.setAttribute('id', 'rehostDebug');
     document.body.appendChild(div);
   }
-  div.innerHTML +='<br />using site: '+settings.site+'<br />'+imageSrc+'<br /><br />';
+  div.innerHTML +=message;
 }
 
 function uploaded(a, settings, response)
 {
-  debug(settings, a, response);
   var newLink='';
   try
   {
@@ -243,6 +271,7 @@ function uploaded(a, settings, response)
     a.style.color = 'red';
     return;
   }
+  debug("Rehosted: "+newLink);
   rehosted(a, newLink);
 }
 
