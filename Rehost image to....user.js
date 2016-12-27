@@ -249,7 +249,7 @@ function debug(message)
     div.setAttribute('id', 'rehostDebug');
     document.body.appendChild(div);
   }
-  div.innerHTML +=message;
+  div.innerHTML +=message+'<br />';
 }
 
 function uploaded(a, settings, response)
