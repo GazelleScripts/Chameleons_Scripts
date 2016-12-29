@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH stats since last
-// @version      0.7
+// @version      0.8
 // @description  Displays the changes in stats on PTH and PTP
 // @author       Chameleon
 // @include      http*://*passtheheadphones.me/*
@@ -22,6 +22,7 @@
   currentStats.ratio = parseFloat(statspans[2].textContent);
   if(isNaN(currentStats.ratio))
     currentStats.ratio = 0;
+  currentStats.time=(new Date())*1;
 
   var oldStats = window.localStorage.lastStats;
 
@@ -30,9 +31,17 @@
   else
     oldStats = JSON.parse(oldStats);
 
-  window.localStorage.lastStats = JSON.stringify(currentStats);
 
   var settings = getSettings();
+
+  if(settings.persistTime && oldStats.time)
+  {
+    var difTime = (new Date())-oldStats.time;
+    if(difTime > settings.persistTime*60000)
+      window.localStorage.lastStats = JSON.stringify(currentStats);
+  }
+  else
+    window.localStorage.lastStats = JSON.stringify(currentStats);
 
   var li=false;
   if(settings.showBuffer)
@@ -101,6 +110,27 @@ function showSettings()
   a.addEventListener('click', changeSetting.bind(undefined, a), false);
   div.appendChild(a);
   div.appendChild(document.createElement('br'));
+  
+  var input=document.createElement('input');
+  input.setAttribute('placeholder', 'Persist Time');
+  input.type='number';
+  input.value = settings.persistTime ? settings.persistTime:'';
+  div.appendChild(input);
+  input.addEventListener('change', changeInput.bind(undefined, input), false);
+  div.appendChild(document.createElement('br'));
+
+  var a=document.createElement('a');
+  a.href='javascript:void(0);';
+  a.innerHTML = 'Save';
+  div.appendChild(a);
+  div.appendChild(document.createElement('br'));
+}
+
+function changeInput(input)
+{
+  var settings = getSettings();
+  settings.persistTime=input.value;
+  GM_setValue('lastStatsSettings', JSON.stringify(settings));
 }
 
 function changeSetting(a)
@@ -141,7 +171,7 @@ function getSettings()
   var settings = GM_getValue('lastStatsSettings', false);
   if(!settings)
   {
-    settings = {noChange: false, profileOnly: false, alert: false, showBuffer: false};
+    settings = {noChange: false, profileOnly: false, alert: false, showBuffer: false, persistTime: ''};
   }
   else
     settings = JSON.parse(settings);
