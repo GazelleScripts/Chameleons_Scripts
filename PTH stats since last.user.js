@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH stats since last
-// @version      0.8
+// @version      0.85
 // @description  Displays the changes in stats on PTH and PTP
 // @author       Chameleon
 // @include      http*://*passtheheadphones.me/*
@@ -42,6 +42,12 @@
   }
   else
     window.localStorage.lastStats = JSON.stringify(currentStats);
+  
+  var difTime=false;
+  if(oldStats.time)
+  {
+    difTime = (new Date())-oldStats.time;
+  }
 
   var li=false;
   if(settings.showBuffer)
@@ -58,20 +64,46 @@
   if(settings.profileOnly && window.location.href.indexOf(document.getElementById('nav_userinfo').getElementsByTagName('a')[0].href) == -1)
     return;
   if(change.up != 0 || settings.noChange)
+  {
     statspans[0].innerHTML += ' ('+renderStats(change.up)+')';
+    if(difTime)
+      statspans[0].title = (prettyTime(difTime))+' ago';
+  }
   if(change.down != 0 || settings.noChange)
+  {
     statspans[1].innerHTML += ' ('+renderStats(change.down)+')';
+    if(difTime)
+      statspans[1].title = (prettyTime(difTime))+' ago';
+  }
   if((change.up != 0 || change.down != 0 || settings.noChange) && settings.showBuffer)
   {
     var span=li.getElementsByTagName('span')[0];
     span.innerHTML += ' ('+renderStats((change.up/1.05)-change.down)+')</span>';
+    if(difTime)
+      span.title = (prettyTime(difTime))+' ago';
   }
   if(change.ratio != 0 || settings.noChange)
+  {
     statspans[2].innerHTML += ' ('+change.ratio+')';
+    if(difTime)
+      statspans[2].title = (prettyTime(difTime))+' ago';
+  }
 
   if(settings.alert && (change.up != 0 || change.down != 0 || change.ratio != 0))
     alert('Up: '+renderStats(change.up)+', Down: '+renderStats(change.down)+', Buffer: '+renderStats((change.up/1.05)-change.down)+', Ratio: '+change.ratio);
 })();
+
+function prettyTime(time)
+{
+  var t=time;
+  if(t/60000 < 1)
+    return Math.round(time/1000)+'s';
+  if(t/(60000*60) < 1)
+    return Math.round(time/60000)+'m';
+  if(t/(60000*60*24) < 1)
+    return Math.round(time/(60000*60))+'h';
+  return Math.round(time/(60000*60*24))+'d '+(Math.round((time%(60000*60*24))/(60000*60)))+'h';
+}
 
 function showSettings()
 {
