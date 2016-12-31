@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH search link on discogs
-// @version      0.6
+// @version      0.65
 // @description  Link to a search from discogs pages to PTH
 // @author       Chameleon
 // @include      http*://*discogs.com/*
@@ -55,7 +55,47 @@ function showDiscogs()
     var span=pTitle.getElementsByTagName('a')[0].parentNode;
     var artist=span.getAttribute('title').replace(/\(.*\)/g, '');
     
+    var page_aside=document.getElementById('page_aside');
+    var before=page_aside.firstElementChild.nextElementSibling.nextElementSibling;
+    var div=document.createElement('div');
+    div.setAttribute('class', 'section');
+    before.parentNode.insertBefore(div, before);
+    var h3=document.createElement('h3');
+    div.appendChild(h3);
+    var img=document.createElement('img');
+    img.src='https://ptpimg.me/2rwc77.png';
+    img.style.height='1em';
+    h3.appendChild(img);
+    h3.appendChild(document.createTextNode(' PTH'));
+    var d1=document.createElement('div');
+    d1.setAttribute('class', 'section_content');
+    div.appendChild(d1);
+    
     var a=document.createElement('a');
+    a.href="https://passtheheadphones.me/artist.php?artistname="+artist;
+    a.innerHTML="Search artist";
+    d1.appendChild(a);
+    d1.appendChild(document.createElement('br'));
+    
+    var a=document.createElement('a');
+    a.href="https://passtheheadphones.me/torrents.php?searchstr="+encodeURIComponent(artist+' '+album);
+    a.innerHTML = 'Search album';
+    d1.appendChild(a);
+    d1.appendChild(document.createElement('br'));
+    
+    var a=document.createElement('a');
+    a.href="https://passtheheadphones.me/upload.php?edition=0&discogs="+encodeURIComponent(window.location.href);
+    a.innerHTML = 'Upload original';
+    d1.appendChild(a);
+    d1.appendChild(document.createElement('br'));
+    
+    var a=document.createElement('a');
+    a.href="https://passtheheadphones.me/upload.php?discogs="+encodeURIComponent(window.location.href);
+    a.innerHTML = 'Upload edition';
+    d1.appendChild(a);
+    d1.appendChild(document.createElement('br'));
+    
+    /*var a=document.createElement('a');
     a.href="https://passtheheadphones.me/artist.php?artistname="+artist;
     //a.innerHTML = "pth";
     var img=document.createElement('img');
@@ -94,6 +134,6 @@ function showDiscogs()
     img.style.height='0.8em';
     a.appendChild(img);
     pTitle.appendChild(document.createTextNode(' '));
-    pTitle.appendChild(a);
+    pTitle.appendChild(a);*/
   }
 }
