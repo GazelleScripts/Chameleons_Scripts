@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH search link on discogs
-// @version      0.5
+// @version      0.6
 // @description  Link to a search from discogs pages to PTH
 // @author       Chameleon
 // @include      http*://*discogs.com/*
@@ -20,7 +20,7 @@
 
 function showPTH()
 {
-  var discogs=window.location.href.split('?discogs=');
+  var discogs=window.location.href.split('discogs=');
   if(discogs.length == 1)
     return;
   
@@ -32,6 +32,15 @@ function showPTH()
     return;
   }
   yadg_input.value=decodeURIComponent(discogs);
+  var yadg_target=document.getElementById('yadg_target');
+  if(window.location.href.indexOf('edition=0') != -1)
+  {
+    yadg_target.value="original";
+  }
+  else
+  {
+    yadg_target.value="other";
+  }
   document.getElementById('yadg_submit').click();
 }
 
@@ -70,7 +79,18 @@ function showDiscogs()
     //a.innerHTML = "pth";
     var img=document.createElement('img');
     img.src='https://ptpimg.me/83k157.png';
-    a.title='Upload to PTH';
+    a.title='Upload to PTH (Edition)';
+    img.style.height='0.8em';
+    a.appendChild(img);
+    pTitle.appendChild(document.createTextNode(' '));
+    pTitle.appendChild(a);
+        
+    var a=document.createElement('a');
+    a.href="https://passtheheadphones.me/upload.php?edition=0&discogs="+encodeURIComponent(window.location.href);
+    //a.innerHTML = "pth";
+    var img=document.createElement('img');
+    img.src='https://ptpimg.me/83k157.png';
+    a.title='Upload to PTH (Original)';
     img.style.height='0.8em';
     a.appendChild(img);
     pTitle.appendChild(document.createTextNode(' '));
