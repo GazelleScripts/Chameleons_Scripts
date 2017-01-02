@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH Autofill from torrent
-// @version      1.1
+// @version      1.2
 // @description  Attempt to read the .torrent file and fill in the artist and album
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/upload.php*
@@ -54,7 +54,7 @@ function addToExisting(a)
     format=format[0];
 
     input.addEventListener('change', fileAdded.bind(undefined, a, format, bitrate, false), false);
-    
+
     index++;
     tr=document.getElementById('extra_format_row_'+index);
   }
@@ -141,98 +141,114 @@ function fileAdded(a, format, bitrate, full, event)
 
   var f=file.name.toLowerCase();
 
+  var formatTemp=-1;
+  var bitrateTemp=-1;
+  var mediaTemp=-1;
+
   if(f.indexOf('mp3') != -1)
   {
-    format.selectedIndex=1;
+    formatTemp=1;
   }
   else if(f.indexOf('flac') != -1)
   {
-    format.selectedIndex=2;
-    bitrate.selectedIndex=9;
+    formatTemp=2;
+    bitrateTemp=9;
   }
   else if(f.indexOf('aac') != -1)
   {
-    format.selectedIndex=3;
+    formatTemp=3;
   }
   else if(f.indexOf('ac3') != -1)
   {
-    format.selectedIndex=4;
+    formatTemp=4;
   }
   else if(f.indexOf('dts') != -1)
   {
-    format.selectedIndex=5;
+    formatTemp=5;
   }
 
   if(f.indexOf('v0') != -1)
   {
-    bitrate.selectedIndex=7;
-    format.selectedIndex=1;
+    bitrateTemp=7;
+    formatTemp=1;
   }
   else if(f.indexOf('v1') != -1)
   {
-    bitrate.selectedIndex=4;
-    format.selectedIndex=1;
+    bitrateTemp=4;
+    formatTemp=1;
   }
   else if(f.indexOf('v2') != -1)
   {
-    bitrate.selectedIndex=3;
-    format.selectedIndex=1;
+    bitrateTemp=3;
+    formatTemp=1;
   }
   else if(f.indexOf('192') != -1)
   {
-    bitrate.selectedIndex=1;
-    format.selectedIndex=1;
+    bitrateTemp=1;
+    formatTemp=1;
   }
   else if(f.indexOf('256') != -1)
   {
-    bitrate.selectedIndex=5;
-    format.selectedIndex=1;
+    bitrateTemp=5;
+    formatTemp=1;
   }
   else if(f.indexOf('320') != -1)
   {
-    bitrate.selectedIndex=8;
-    format.selectedIndex=1;
+    bitrateTemp=8;
+    formatTemp=1;
   }
 
   var media=document.getElementById('media');
   if(f.indexOf('dvd') != -1)
   {
-    media.selectedIndex=2;
+    mediaTemp=2;
   }
   else if(f.indexOf('vinyl') != -1)
   {
-    media.selectedIndex=3;
+    mediaTemp=3;
   }
   else if(f.indexOf('soundboard') != -1)
   {
-    media.selectedIndex=4;
+    mediaTemp=4;
   }
   else if(f.indexOf('sacd') != -1)
   {
-    media.selectedIndex=5;
+    mediaTemp=5;
   }
   else if(f.indexOf('dat') != -1)
   {
-    media.selectedIndex=6;
+    mediaTemp=6;
   }
   else if(f.indexOf('cassette') != -1)
   {
-    media.selectedIndex=7;
+    mediaTemp=7;
   }
   else if(f.indexOf('web') != -1)
   {
-    media.selectedIndex=8;
+    mediaTemp=8;
   }
   else if(f.indexOf('blu-ray') != -1 || f.indexOf('bluray') != -1)
   {
-    media.selectedIndex=9;
+    mediaTemp=9;
   }
   else
-    media.selectedIndex=1;
+    mediaTemp=1;
 
-  triggerChange(format);
-  triggerChange(bitrate);
-  triggerChange(media);
+  if(formatTemp != -1)
+  {
+    format.selectedIndex=formatTemp;
+    triggerChange(format);
+  }
+  if(bitrateTemp != -1)
+  {
+    bitrate.selectedIndex=bitrateTemp;
+    triggerChange(bitrate);
+  }
+  if(mediaTemp != -1)
+  {
+    media.selectedIndex=mediaTemp;
+    triggerChange(media);
+  }
 
   var r=new FileReader();
   r.onload=readFile;
