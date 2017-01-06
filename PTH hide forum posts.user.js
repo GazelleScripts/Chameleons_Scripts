@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH hide forum posts
-// @version      0.1
+// @version      0.2
 // @description  Add ability to hide forum posts
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/*
@@ -28,7 +28,7 @@
 
 function toggleHide(f, event)
 {
-  if(event.srcElement !== f.firstElementChild)
+  if(event.srcElement !== f.firstElementChild && event.target !== f.firstElementChild)
     return;
   var post_id=f.getElementsByTagName('a')[0].textContent;
   var hideable=f.nextElementSibling;
