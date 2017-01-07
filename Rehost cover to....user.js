@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Rehost cover to...
-// @version      0.8
+// @version      0.81
 // @description  Rehost an existing cover image to a whitelisted site
 // @author       Chameleon
 // @include      http*://*passtheheadphones.me/torrents.php?id=*
@@ -59,7 +59,7 @@ function showSettings(message)
     div.setAttribute('style', 'width: 100%; text-align: center; padding-bottom: 10px;');
     div.setAttribute('class', 'box');
   }
-  div.innerHTML = '<h2>Rehost image to... Settings</h2><br />';
+  div.innerHTML = '<h2>Rehost cover to... Settings</h2><br />';
   var settings = getSettings();
 
   var a=document.createElement('a');
