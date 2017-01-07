@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH Ignore thread
-// @version      0.1
+// @version      0.2
 // @description  Hide threads in subforum view
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/forums.php?action=viewforum*
+// @include      http*://passtheheadphones.me/forums.php?*action=viewforum*
 // @grant        none
 // ==/UserScript==
 
@@ -11,6 +11,7 @@
   'use strict';
 
   var showHidden=document.createElement('a');
+  showHidden.href='javascript:void(0);';
   showHidden.setAttribute('class', 'brackets');
   document.getElementsByClassName('linkbox')[0].appendChild(showHidden);
   showHidden.setAttribute('id', 'ignoreToggle');
