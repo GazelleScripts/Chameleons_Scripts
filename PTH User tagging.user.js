@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH User tagging
-// @version      0.51
+// @version      0.6
 // @description  Tag, ignore, highlight, and change avatars for users on PTH
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/*
@@ -124,6 +124,14 @@ function pageResized()
 
 function resetTags()
 {
+  var ignoredQuotes=document.getElementsByClassName('toggleQuote');
+  for(var i=0; i<ignoredQuotes.length; i++)
+  {
+    var ig=ignoredQuotes[i];
+    ig.nextElementSibling.style.display='';
+    ig.parentNode.removeChild(ig);
+  }
+
   var posts=document.getElementsByClassName('forum_post');
   for(var i=0; i<posts.length-1; i++)
   {
@@ -136,6 +144,15 @@ function resetTags()
       continue;
     var u=postTable.getElementsByTagName('strong')[0].getElementsByTagName('a')[0];
     var username=u.textContent;
+
+
+    var c=postTable.getElementsByClassName('user_title');
+    if(c.length > 0)
+    {
+      var orig=c[0].getAttribute('original');
+      if(orig)
+        c[0].innerHTML=orig;
+    }
 
     if(avatar)
     {
@@ -164,6 +181,33 @@ function resetTags()
 
 function addTags()
 {
+  var quotes=document.getElementsByTagName('blockquote');
+  for(var i=0; i<quotes.length; i++)
+  {
+    var q=quotes[i];
+    var username = q.previousElementSibling;
+    if(username)
+    {
+      username=username.textContent.split(' ')[0];
+      var user=getUser(username)[0];
+      if(user.softIgnore || user.hardIgnore)
+      {
+        var a=document.createElement('a');
+        a.href='javascript:void(0);';
+        a.textContent='<Ignored>';
+        a.addEventListener('click', toggleQuote.bind(undefined, a, q), false);
+        a.setAttribute('class', 'toggleQuote');
+        q.parentNode.insertBefore(a, q);
+        if(q.getAttribute('unIgnored')=="true")
+        {
+          a.textContent='Ignore';
+        }
+        else
+          q.style.display='none';
+      }
+    }
+  }
+
   var posts=document.getElementsByClassName('forum_post');
   for(var i=0; i<posts.length-1; i++)
   {
@@ -193,6 +237,23 @@ function addTags()
     {
       var style=postTable.getAttribute('style');
       postTable.setAttribute('style', 'box-shadow: '+user.postHighlight+' 0 0 5px 1px !important;');
+    }
+    if(user.customTitle)
+    {
+      var c=postTable.getElementsByClassName('user_title');
+      if(c.length > 0)
+        c=c[0];
+      else
+      {
+        c=document.createElement('span');
+        c.setAttribute('class', 'user_title');
+        var before=postTable.getElementsByClassName('time')[0];
+        before.parentNode.insertBefore(c, before);
+      }
+      if(!c.getAttribute('original'))
+        c.setAttribute('original', c.innerHTML);
+
+      c.innerHTML=user.customTitle;
     }
     if(user.tag && user.showTag)
     {
@@ -256,6 +317,22 @@ function addTags()
   }
 }
 
+function toggleQuote(a, q)
+{
+  if(a.innerHTML.indexOf('Ignored') != -1)
+  {
+    a.textContent = 'Ignore';
+    q.style.display='';
+    q.setAttribute('unIgnored', "true");
+  }
+  else
+  {
+    a.textContent = '<Ignored>';
+    q.style.display='none';
+    q.setAttribute('unIgnored', "false");
+  }
+}
+
 function openTags(username, postTable)
 {
   var div=document.getElementById('chameleonTagsDiv');
@@ -274,6 +351,14 @@ function openTags(username, postTable)
   div.appendChild(input);
   input.placeholder='Replacement avatar URL';
   input.value = user.replacementAvatar ? user.replacementAvatar : '';
+  input.addEventListener('change', changeTags.bind(undefined, div, username, postTable, input), false);
+
+  div.appendChild(document.createElement('br'));
+
+  var input=document.createElement('input');
+  div.appendChild(input);
+  input.placeholder='Replacement custom title';
+  input.value = user.customTitle ? user.customTitle : '';
   input.addEventListener('change', changeTags.bind(undefined, div, username, postTable, input), false);
 
   div.appendChild(document.createElement('br'));
@@ -353,8 +438,9 @@ function changeTags(div, username, table, a)
 
   var inputs=div.getElementsByTagName('input');
   user.replacementAvatar = inputs[0].value;
-  user.postHighlight = inputs[1].value;
-  user.usernameColour = inputs[2].value;
+  user.customTitle = inputs[1].value;
+  user.postHighlight = inputs[2].value;
+  user.usernameColour = inputs[3].value;
 
   var textareas=div.getElementsByTagName('textarea');
   user.tag=textareas[0].value;
