@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH User tagging
-// @version      0.61
+// @version      0.7
 // @description  Tag, ignore, highlight, and change avatars for users on PTH
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/*
@@ -23,9 +23,11 @@
   }
 
   var posts=document.getElementsByClassName('forum_post');
-  for(var i=0; i<posts.length-1; i++)
+  for(var i=0; i<posts.length; i++)
   {
     var p=posts[i];
+    if(p.getAttribute('class').indexOf('preview_wrap') != -1)
+      continue;
     var links=p.getElementsByTagName('td')[0].firstElementChild;
     var username=p.getElementsByTagName('strong')[0].getElementsByTagName('a')[0].textContent;
 
@@ -254,7 +256,7 @@ function addTags()
       if(!c.getAttribute('original'))
         c.setAttribute('original', c.innerHTML);
 
-      c.innerHTML=user.customTitle;
+      c.innerHTML='('+user.customTitle+')';
     }
     if(user.tag && user.showTag)
     {
