@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH Upload Save Defaults
-// @version      0.9
+// @version      1.0
 // @description  Save the dropdown menu selections on the upload form and automatically set them on page load
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/upload.php*
@@ -12,21 +12,37 @@
   'use strict';
 
   var before=document.getElementById('upload_table');
+  
+  var span=document.createElement('span');
+  span.setAttribute('style', 'display: block; text-align: center;');
+  before.parentNode.insertBefore(span, before);
 
   var a=document.createElement('a');
-  a.setAttribute('style', 'display: block; text-align: center;');
   a.innerHTML = 'Save options';
   a.href = 'javascript:void(0);';
-  before.parentNode.insertBefore(a, before);
+  span.appendChild(a);
   a.addEventListener('click', saveOptions.bind(undefined, a), false);
+  
+  span.appendChild(document.createTextNode(' | '));
 
+  var a=document.createElement('a');
+  a.innerHTML = 'Load options';
+  a.href = 'javascript:void(0);';
+  span.appendChild(a);
+  a.addEventListener('click', loadOptions.bind(undefined, false), false);  
+  
+  loadOptions(true);
+}());
+
+function loadOptions(addExtra)
+{
   var options=window.localStorage.uploadOptions;
   if(!options)
     options = {selects:[], multiformat:false, scene:false};
   else
     options = JSON.parse(options);
 
-  if(options.multiformat)
+  if(options.multiformat && addExtra)
   {
     for(var i=1; i<options.multiformat; i++)
     {
@@ -52,7 +68,7 @@
         document.getElementById('upload_logs').setAttribute('class', '');
     }
   }
-}());
+}
 
 function saveOptions(a)
 {
