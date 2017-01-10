@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH Preview Tracks
-// @version      1.9
+// @version      2.0
 // @description  Embed youtube clips for the tracks of a torrent group
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/torrents.php?id=*
@@ -604,15 +604,17 @@ function doTracks(artist, tracks)
   var settings=getSettings();
   for(var i=0; i<tracks.length; i++)
   {
+    var input=document.createElement('input');
     var t=tracks[i];
     var track=t.textContent;
+    input.value=(artist+' '+track).trim();
     t.innerHTML = '';
     var span=document.createElement('span');
     var a=document.createElement('a');
     a.href='javascript:void(0);';
     a.setAttribute('class', 'previewLinks');
     a.innerHTML = track;
-    a.addEventListener('click', preview.bind(undefined, a, t, span, artist, track, i), false);
+    a.addEventListener('click', preview.bind(undefined, a, t, span, artist, track, i, input), false);
     t.appendChild(a);
     t.appendChild(document.createTextNode(' '));
     if(settings.useYoutubeAPI)
@@ -625,7 +627,29 @@ function doTracks(artist, tracks)
       t.appendChild(a);
       t.appendChild(document.createTextNode(' '));
     }
+    var a=document.createElement('a');
+    a.href='javascript:void(0);';
+    a.innerHTML = '(show search)';
+    a.addEventListener('click', toggleShow.bind(undefined, input, a), false);
+    t.appendChild(a);
+    t.appendChild(document.createTextNode(' '));
+    t.appendChild(input);
+    input.style.display='none';
     t.appendChild(span);
+  }
+}
+
+function toggleShow(el, link)
+{
+  if(el.style.display=='none')
+  {
+    link.innerHTML=link.innerHTML.replace(/show/, 'hide');
+    el.style.display='';
+  }
+  else
+  {
+    link.innerHTML=link.innerHTML.replace(/hide/, 'show');
+    el.style.display='none';    
   }
 }
 
@@ -763,32 +787,37 @@ function getTracks(offset)
   return files;
 }
 
-function preview(a, t, span, artist, track, index1)
+function preview(a, t, span, artist, track, index1, input)
 {
-  var videoIds = t.getAttribute('videoIds');
-  if(videoIds)
+  var existingSearch=a.getAttribute('search');
+  if(existingSearch == input.value)
   {
-    var index = parseInt(t.getAttribute('index'));
-    videoIds = JSON.parse(videoIds);
-    if(index >= videoIds.length)
+    var videoIds = t.getAttribute('videoIds');
+    if(videoIds)
     {
-      span.innerHTML = 'Already on last video';
-      window.setTimeout(clear.bind(undefined, span), 5000);
+      var index = parseInt(t.getAttribute('index'));
+      videoIds = JSON.parse(videoIds);
+      if(index >= videoIds.length)
+      {
+        span.innerHTML = 'Already on last video';
+        window.setTimeout(clear.bind(undefined, span), 5000);
+        return;
+      }
+      addEmbed(t, span, videoIds[index]);
+      t.setAttribute('index', index+1);
       return;
     }
-    addEmbed(t, span, videoIds[index]);
-    t.setAttribute('index', index+1);
-    return;
   }
+  a.setAttribute('search', input.value);
   t.parentNode.setAttribute('index', index1);
   span.innerHTML = 'Getting videos';
   //track = track.split('(')[0];
   var xhr = new XMLHttpRequest();
   var apikey='AIzaSyBkMKh0dR1lWSrr2Bia_JdRc1kv7Nue8H8';
-  var search=(artist+' '+track).trim();
+  var search=input.value.trim();
   //xhr.open('GET', "https://gdata.youtube.com/feeds/api/videos?v=2&alt=json&orderby=relevance&q="+encodeURIComponent(artist+' '+track));
   xhr.open('GET', "https://www.googleapis.com/youtube/v3/search?part=snippet&order=relevance&type=video&key="+apikey+"&q="+encodeURIComponent(search));
-  xhr.onreadystatechange = xhr_func.bind(undefined, span, xhr, previewing.bind(undefined, t, span), preview.bind(undefined, a, t, span, artist, track));
+  xhr.onreadystatechange = xhr_func.bind(undefined, span, xhr, previewing.bind(undefined, t, span), preview.bind(undefined, a, t, span, artist, track, input));
   xhr.send();
 }
 
