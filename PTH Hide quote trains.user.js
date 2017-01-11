@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH Hide quote trains
-// @version      0.2
+// @version      0.3
 // @description  Hide nested quotes with a link to show them
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/*
@@ -18,6 +18,7 @@
   }
 
   var quotes=document.getElementsByTagName('blockquote');
+  var reQuotes=[];
   for(var i=0; i<quotes.length; i++)
   {
     var q=quotes[i];
@@ -45,16 +46,21 @@
     }
     if(depth===0)
     {
-      var hidden=q.getElementsByClassName('showQuotes');
-      if(hidden.length > 0)
-      {
-        var a=document.createElement('a');
-        a.innerHTML='Toggle quotes';
-        a.href='javascript:void(0);';
-        //a.setAttribute('style', 'margin-left: 5px;'); 
-        q.parentNode.insertBefore(a, q);
-        a.addEventListener('click', toggleQuotes.bind(undefined, q), false);
-      }
+      reQuotes.push(q);
+    }
+  }
+  for(var i=0; i<reQuotes.length; i++)
+  {
+    var q=reQuotes[i];
+    var hidden=q.getElementsByClassName('showQuotes');
+    if(hidden.length > 0)
+    {
+      var a=document.createElement('a');
+      a.innerHTML='Toggle quotes';
+      a.href='javascript:void(0);';
+      //a.setAttribute('style', 'margin-left: 5px;'); 
+      q.parentNode.insertBefore(a, q);
+      a.addEventListener('click', toggleQuotes.bind(undefined, q), false);
     }
   }
 })();
