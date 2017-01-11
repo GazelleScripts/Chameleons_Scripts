@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH Hide quote trains
-// @version      0.3
+// @version      0.4
 // @description  Hide nested quotes with a link to show them
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/*
@@ -130,8 +130,20 @@ function getSettings()
 function toggleQuotes(q)
 {
   var as=q.getElementsByClassName('showQuotes');
+  var open=0;
   for(var i=0; i<as.length; i++)
   {
+    if(as[i].innerHTML.indexOf('Hide') != -1)
+      open++;
+  }
+  var html='Show Quote';
+  if(open == as.length)
+  {
+    html='Hide Quote';
+  }
+  for(var i=0; i<as.length; i++)
+  {
+    as[i].innerHTML = html;
     as[i].click();
   }
 }
@@ -151,7 +163,7 @@ function getDepth(q)
 
 function toggleQuote(a, q)
 {
-  if(q.style.display=='none')
+  if(a.innerHTML.indexOf('Show') != -1)
   {
     a.innerHTML='Hide Quote';
     q.style.display='';
