@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH hide forum posts
-// @version      0.2
+// @version      0.3
 // @description  Add ability to hide forum posts
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/*
@@ -21,7 +21,10 @@
     var f=forumHeads[i];
     var post_id=f.getElementsByTagName('a')[0].textContent;
     if(hiddenPosts.indexOf(post_id) != -1)
+    {
       f.nextElementSibling.style.display='none';
+      f.nextElementSibling.setAttribute('stayHidden', 'true');
+    }
     f.addEventListener('click', toggleHide.bind(undefined, f), false);
   }
 })();
@@ -36,11 +39,13 @@ function toggleHide(f, event)
   {
     removeHiddenPost(post_id);
     $(hideable).show("blind", { direction: "up" }, "slow");
+    hideable.setAttribute('stayHidden', 'false');
   }
   else
   {
     addHiddenPost(post_id);
     $(hideable).hide("blind", { direction: "up" }, "slow");
+    hideable.setAttribute('stayHidden', 'true');
   }
 }
 
