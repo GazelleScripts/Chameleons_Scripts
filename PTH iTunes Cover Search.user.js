@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH iTunes Cover Search
-// @version      1.7
+// @version      1.8
 // @description  Search iTunes for cover art
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/*
@@ -16,7 +16,126 @@
     showEdit();
   if(window.location.href.indexOf('torrents.php?id=') != -1)
     saveArtist();
+  if(window.location.href.indexOf('better.php') != -1 && window.location.href.indexOf('method=artwork') != -1)
+    showBetter();
 })();
+
+function showBetter()
+{
+  var rows=document.getElementsByClassName('torrent_row');
+  for(var i=0; i<rows.length; i++)
+  {
+    var r=rows[i];
+    var as=r.getElementsByTagName('a');
+    var artist=as[0].textContent;
+    var album=as[1].textContent;
+    var groupId=as[1].href.split('id=')[1];
+    var div=as[0].parentNode;
+
+    var optionsDiv=document.createElement('div');
+    optionsDiv.style.display='none';
+    var search=document.createElement('input');
+    optionsDiv.appendChild(search);
+    search.setAttribute('placeholder', 'search');
+    search.value=(artist+' '+album).trim();
+    var country=document.createElement('input');
+    optionsDiv.appendChild(country);
+    country.setAttribute('placeholder', 'country code');
+    country.value='US';
+
+    var toggle=document.createElement('a');
+    toggle.href='javascript:void(0);';
+    toggle.innerHTML = 'Show search';
+    toggle.addEventListener('click', toggleDiv.bind(undefined, toggle, optionsDiv), false);
+
+    var messageDiv=document.createElement('div');
+    var image=document.createElement('input');
+    image.setAttribute('style', 'width: 250px;');
+    var rehostA=document.createElement('a');
+    rehostA.href='javascript:void(0);';
+    rehostA.innerHTML = 'Auto-rehost: Off';
+    rehostA.addEventListener('click', toggleAutoRehost.bind(undefined, rehostA, image, messageDiv), false);
+
+    image.addEventListener('keyup', rehost.bind(undefined, image, messageDiv), false);
+
+    if(window.localStorage.autoUpload == "true")
+    {
+      image.setAttribute('autorehost', 'true');
+      rehostA.innerHTML = 'Auto-rehost: On';
+    }
+    
+    var imageDiv=document.createElement('div');
+    var save=document.createElement('a');
+    save.href='javascript:void(0);';
+    save.innerHTML = 'Save';
+    save.addEventListener('click', saveCover.bind(undefined, messageDiv, imageDiv, image, groupId), false);
+    
+    var a=document.createElement('a');
+    div.appendChild(document.createElement('br'));
+    div.appendChild(a);
+    div.appendChild(document.createTextNode(' | '));
+    div.appendChild(toggle);
+    div.appendChild(optionsDiv);
+    div.appendChild(document.createElement('br'));
+    div.appendChild(image);
+    div.appendChild(document.createTextNode(' '));
+    div.appendChild(save);
+    div.appendChild(document.createTextNode(' | '));
+    div.appendChild(rehostA);
+    div.appendChild(messageDiv);
+    a.innerHTML='Get image from iTunes';
+    a.href='javascript:void(0);';
+    imageDiv.setAttribute('style', 'text-align: center;');
+    div.appendChild(imageDiv);
+    a.addEventListener('click', getAlbum.bind(undefined, country, search, image, div, messageDiv, imageDiv), false);
+  }
+}
+
+function saveCover(messageDiv, imageDiv, image, groupId)
+{
+  messageDiv.innerHTML = 'Loading torrent group edit page';
+  var xhr=new XMLHttpRequest();
+  xhr.open('GET', "/torrents.php?action=editgroup&groupid="+groupId);
+  xhr.onreadystatechange = xhr_func.bind(undefined, messageDiv, xhr, editPage.bind(undefined, messageDiv, imageDiv, image), saveCover.bind(undefined, messageDiv, imageDiv, image, groupId));
+  xhr.send();
+}
+
+function editPage(messageDiv, imageDiv, image, response)
+{
+  var div=document.createElement('div');
+  div.innerHTML = response;
+  var form = div.getElementsByClassName('edit_form')[0];
+  var image_input = form.getElementsByTagName('input')[3];
+  image_input.value = image.value;
+  form.getElementsByTagName('input')[4].value = 'iTunes userscript: added cover';
+  
+  var inputs = form.getElementsByTagName('input');
+  var formData = new FormData();
+  for(var i=0; i<inputs.length; i++)
+  {
+    if(inputs[i].name === "")
+      continue;
+    formData.append(inputs[i].name, inputs[i].value);
+  }
+  var textarea = form.getElementsByTagName('textarea')[0];
+  formData.append(textarea.name, textarea.value);
+  var release = form.getElementsByTagName('select')[0];
+  if(release)
+    formData.append(release.name, release.value);
+
+  messageDiv.innerHTML = "Saving edited torrent group";
+  
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/torrents.php');
+  xhr.onreadystatechange = xhr_func.bind(undefined, messageDiv, xhr, submitted.bind(undefined, messageDiv, imageDiv), editPage.bind(undefined, messageDiv, imageDiv, image));
+  xhr.send(formData);
+}
+
+function submitted(messageDiv, imageDiv)
+{
+  messageDiv.innerHTML = "Saved";
+  imageDiv.innerHTML = '';
+}
 
 function saveArtist()
 {
@@ -79,12 +198,10 @@ function showEdit()
   div.appendChild(messageDiv);
   a.innerHTML='Get image from iTunes';
   a.href='javascript:void(0);';
-  a.addEventListener('click', getAlbum.bind(undefined, country, search, image, div, messageDiv), false);
-
   var imageDiv=document.createElement('div');
-  imageDiv.setAttribute('id', 'iTunesImageDiv');
   imageDiv.setAttribute('style', 'text-align: center;');
   div.appendChild(imageDiv);
+  a.addEventListener('click', getAlbum.bind(undefined, country, search, image, div, messageDiv, imageDiv), false);
 }
 
 function toggleDiv(a, div)
@@ -136,22 +253,20 @@ function showUpload()
   div.appendChild(optionsDiv);
   a.innerHTML='Get image from iTunes';
   a.href='javascript:void(0);';
-  a.addEventListener('click', getAlbumUpload.bind(undefined, album, artist, country, search, image, imageTd, messageDiv), false);
-
   var imageDiv=document.createElement('div');
-  imageDiv.setAttribute('id', 'iTunesImageDiv');
   imageDiv.setAttribute('style', 'text-align: center;');
   div.appendChild(imageDiv);
+  a.addEventListener('click', getAlbumUpload.bind(undefined, album, artist, country, search, image, imageTd, messageDiv, imageDiv), false);
 }
 
 function getAlbumUpload(album, artist, country, search, image, imageTd, messageDiv)
 {
   if(search.value.length === 0)
     search.value=(artist.value+' '+album.value).trim();
-  getAlbum(country, search, image, imageTd, messageDiv);
+  getAlbum(country, search, image, imageTd, messageDiv, imageDiv);
 }
 
-function getAlbum(country, search, im, td, messageDiv)
+function getAlbum(country, search, im, td, messageDiv, imageDiv)
 {
   //console.log(im);
 
@@ -170,17 +285,17 @@ function getAlbum(country, search, im, td, messageDiv)
   GM_xmlhttpRequest({
     method: "GET",
     url: s,
-    onload: function(response) { if(response.status == 200) {gotAlbum(im, td, messageDiv, response.responseText); } else { messageDiv.innerHTML = 'iTunes error: '+response.status; } }
+    onload: function(response) { if(response.status == 200) {gotAlbum(im, td, messageDiv, imageDiv, response.responseText); } else { messageDiv.innerHTML = 'iTunes error: '+response.status; } }
   });
 }
 
-function gotAlbum(input, td, messageDiv, response)
+function gotAlbum(input, td, messageDiv, imageDiv, response)
 {
   messageDiv.innerHTML = 'Got images';
   var r=JSON.parse(response);
   if(r.results.length > 0)
   {
-    var div=document.getElementById('iTunesImageDiv');
+    var div=imageDiv;
     div.innerHTML='Current: 1 | ';
     if(r.results.length > 1)
     {
