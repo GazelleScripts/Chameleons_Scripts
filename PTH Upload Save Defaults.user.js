@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH Upload Save Defaults
-// @version      1.0
+// @version      1.1
 // @description  Save the dropdown menu selections on the upload form and automatically set them on page load
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/upload.php*
@@ -57,6 +57,8 @@ function loadOptions(addExtra)
     var s=options.selects[i];
     var dropdown=document.getElementById(s.id);
     if(!dropdown)
+      continue;
+    if(dropdown.getAttribute('disabled'))
       continue;
     dropdown.selectedIndex = s.index;
     if(dropdown.id != "genre_tags" && dropdown.id != "categories")
