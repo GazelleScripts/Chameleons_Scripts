@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH Preview Tracks
-// @version      2.0
+// @version      2.1
 // @description  Embed youtube clips for the tracks of a torrent group
 // @author       Chameleon
 // @include      http*://passtheheadphones.me/torrents.php?id=*
@@ -65,6 +65,13 @@ function showSettings()
   div.appendChild(a);
   div.appendChild(document.createElement('br'));
 
+  var a=document.createElement('a');
+  a.href='javascript:void(0);';
+  a.innerHTML = 'Minimize Track Preview: '+(settings.hideTrackPreview ? 'On':'Off');
+  a.addEventListener('click', changeSettings.bind(undefined, a, div), false);
+  div.appendChild(a);
+  div.appendChild(document.createElement('br'));
+
   var input=document.createElement('input');
   input.placeholder = 'Youtube quality';
   input.value=settings.quality ? settings.quality:'';
@@ -109,6 +116,16 @@ function changeSettings(a, div)
     }
     else
       settings.useYoutubeAPI = false;
+  }
+
+  if(a == as[2])
+  {
+    if(as[2].innerHTML.indexOf('Off') != -1) 
+    {
+      settings.hideTrackPreview = true;
+    }
+    else
+      settings.hideTrackPreview = false;
   }
 
   var inputs=div.getElementsByTagName('input');
@@ -698,12 +715,19 @@ function makePreview(getTracksFunc)
   div.appendChild(clone);
   clone.getElementsByTagName('strong')[0].innerHTML = 'Track Preview';
   var body=document.createElement('div');
+  if(settings.hideTrackPreview)
+    body.style.display='none';
   var a=document.createElement('a');
   a.href='javascript:void(0);';
   a.innerHTML = '(toggle)';
   clone.appendChild(document.createTextNode(' '));
   clone.appendChild(a);
   a.addEventListener('click', toggle.bind(undefined, body), false);
+  var a=document.createElement('a');
+  a.setAttribute('style', 'float: right;');
+  a.innerHTML='Settings';
+  a.href='/forums.php?action=viewthread&threadid=1837';
+  clone.appendChild(a);
   div.appendChild(body);
   body.setAttribute('class', 'body');
   body.innerHTML = 'Track List:<br />';
