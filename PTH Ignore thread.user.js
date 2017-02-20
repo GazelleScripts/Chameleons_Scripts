@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH Ignore thread
-// @version      0.2
+// @version      0.3
 // @description  Hide threads in subforum view
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/forums.php?*action=viewforum*
+// @include      http*://redacted.ch/forums.php?*action=viewforum*
 // @grant        none
 // ==/UserScript==
 

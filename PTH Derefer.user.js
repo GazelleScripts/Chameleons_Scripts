@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH Derefer
-// @version      0.1
+// @version      0.2
 // @description  Derefer external links on PTH
 // @author       Chameleon
-// @include      http*://*passtheheadphones.me/*
+// @include      http*://*redacted.ch/*
 // @grant        none
 // ==/UserScript==
 

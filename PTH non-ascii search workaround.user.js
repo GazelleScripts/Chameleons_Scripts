@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH non-ascii search workaround
-// @version      0.1
+// @version      0.2
 // @description  Redirect on searches that fail due to 16-bit non-ascii characters
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/torrents.php?searchstr=*
+// @include      http*://redacted.ch/torrents.php?searchstr=*
 // @grant        none
 // ==/UserScript==
 

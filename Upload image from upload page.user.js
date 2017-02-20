@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name         Upload image from upload page
-// @version      1.3
+// @version      1.4
 // @description  Upload album art from within the PTH upload page
 // @author       Chameleon
-// @include      http*://*passtheheadphones.me/upload.php*
-// @include      http*://*passtheheadphones.me/forums.php*threadid=1725*
-// @include      http*://*passtheheadphones.me/artist.php*action=edit*
-// @include      http*://*passtheheadphones.me/torrents.php*action=editgroup*
+// @include      http*://*redacted.ch/upload.php*
+// @include      http*://*redacted.ch/forums.php*threadid=1725*
+// @include      http*://*redacted.ch/artist.php*action=edit*
+// @include      http*://*redacted.ch/torrents.php*action=editgroup*
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 

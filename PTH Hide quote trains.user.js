@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH Hide quote trains
-// @version      0.4
+// @version      0.5
 // @description  Hide nested quotes with a link to show them
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/*
+// @include      http*://redacted.ch/*
 // @grant        none
 // ==/UserScript==
 

@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH stats since last
-// @version      0.85
+// @version      0.86
 // @description  Displays the changes in stats on PTH and PTP
 // @author       Chameleon
-// @include      http*://*passtheheadphones.me/*
+// @include      http*://*redacted.ch/*
 // @include      http*://*passthepopcorn.me/*
 // @grant        GM_getValue
 // @grant        GM_setValue

@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH Collages on searchbar
-// @version      0.3
+// @version      0.4
 // @description  Add a search box for collages to the search bar
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/*
+// @include      http*://redacted.ch/*
 // @grant        none
 // ==/UserScript==
 

@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH Posts
-// @version      0.2
+// @version      0.3
 // @description  Show a Posts link that takes you to your grouped post history
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/*
+// @include      http*://redacted.ch/*
 // @grant        none
 // ==/UserScript==
 var userid=document.getElementById('nav_userinfo').getElementsByTagName('a')[0].href.split('?id=')[1];

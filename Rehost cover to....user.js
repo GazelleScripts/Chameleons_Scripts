@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         Rehost cover to...
-// @version      0.81
+// @version      0.82
 // @description  Rehost an existing cover image to a whitelisted site
 // @author       Chameleon
-// @include      http*://*passtheheadphones.me/torrents.php?id=*
-// @include      http*://*passtheheadphones.me/forums.php?*threadid=1737*
+// @include      http*://*redacted.ch/torrents.php?id=*
+// @include      http*://*redacted.ch/forums.php?*threadid=1737*
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 

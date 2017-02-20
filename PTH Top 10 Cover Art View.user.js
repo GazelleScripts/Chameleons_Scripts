@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         PTH Top 10 Cover Art View
-// @version      0.5
+// @version      0.6
 // @description  Show the top 10 with album art rather than as a list
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/top10.php
-// @include      http*://*passtheheadphones.me/forums.php?*threadid=2625*
+// @include      http*://redacted.ch/top10.php
+// @include      http*://*redacted.ch/forums.php?*threadid=2625*
 // @grant        none
 // ==/UserScript==
 

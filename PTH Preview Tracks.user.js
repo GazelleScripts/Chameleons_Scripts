@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name         PTH Preview Tracks
-// @version      2.1
+// @version      2.2
 // @description  Embed youtube clips for the tracks of a torrent group
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/torrents.php?id=*
-// @include      http*://passtheheadphones.me/index.php
-// @include      http*://passtheheadphones.me/*threadid=1837*
+// @include      http*://redacted.ch/torrents.php?id=*
+// @include      http*://redacted.ch/index.php
+// @include      http*://redacted.ch/*threadid=1837*
 // @grant        none
 // ==/UserScript==
 

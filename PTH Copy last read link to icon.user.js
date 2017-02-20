@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH Copy last read link to icon
-// @version      0.1
+// @version      0.2
 // @description  Copy the last read link to the read/unread/pinned/locked icon
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/*
+// @include      http*://redacted.ch/*
 // @grant        none
 // ==/UserScript==
 

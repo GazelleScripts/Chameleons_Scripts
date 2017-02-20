@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name         PTH Skip upload warning
-// @version      0.73
+// @version      0.74
 // @description  Skip the warning page generated when uploading a torrent without the 'source' option set
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/upload.php*
-// @include      http*://passtheheadphones.me/torrents.php?id=*
-// @include      http*://passtheheadphones.me/forums.php?*threadid=3743*
+// @include      http*://redacted.ch/upload.php*
+// @include      http*://redacted.ch/torrents.php?id=*
+// @include      http*://redacted.ch/forums.php?*threadid=3743*
 // @grant        none
 // ==/UserScript==
 

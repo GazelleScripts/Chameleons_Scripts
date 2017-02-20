@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH Upload Save Defaults
-// @version      1.1
+// @version      1.2
 // @description  Save the dropdown menu selections on the upload form and automatically set them on page load
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/upload.php*
+// @include      http*://redacted.ch/upload.php*
 // @grant        none
 // @run-at       document-idle
 // ==/UserScript==

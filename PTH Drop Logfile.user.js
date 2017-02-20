@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         PTH Drop Logfile
-// @version      0.4
+// @version      0.5
 // @description  Enable dropping logfiles into a dropzone on the upload page
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/upload.php*
-// @include      http*://passtheheadphones.me/logchecker.php*
+// @include      http*://redacted.ch/upload.php*
+// @include      http*://redacted.ch/logchecker.php*
 // @grant        none
 // @run-at       document-idle
 // ==/UserScript==

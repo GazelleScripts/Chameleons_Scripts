@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH Searchbars open in new tab
-// @version      0.1
+// @version      0.2
 // @description  Open the searches from the search bar on a new tab
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/*
+// @include      http*://redacted.ch/*
 // @grant        none
 // ==/UserScript==
 

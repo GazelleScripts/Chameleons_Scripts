@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH Edition auto-move
-// @version      0.1
+// @version      0.2
 // @description  Move the year, label, and catalogue number to the edition fields
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/upload.php*
+// @include      http*://redacted.ch/upload.php*
 // @grant        none
 // ==/UserScript==
 

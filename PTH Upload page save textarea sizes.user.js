@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH Upload page save textarea sizes
-// @version      0.1
+// @version      0.2
 // @description  Save the sizes of the textareas when you change them, and then set them back on page load
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/upload.php*
+// @include      http*://redacted.ch/upload.php*
 // @grant        none
 // ==/UserScript==
 

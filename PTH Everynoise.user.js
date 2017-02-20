@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH Everynoise
-// @version      0.2
+// @version      0.3
 // @description  Add everynoise.com overload (ctrl+click) to every tag link
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/*
+// @include      http*://redacted.ch/*
 // @grant        none
 // ==/UserScript==
 

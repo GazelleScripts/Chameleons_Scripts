@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH Search requests on failed search
-// @version      0.2
+// @version      0.3
 // @description  Add a link to the 'Your search did not match anything' page to search for a request with the same search
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/torrents.php*
+// @include      http*://redacted.ch/torrents.php*
 // @grant        none
 // ==/UserScript==
 

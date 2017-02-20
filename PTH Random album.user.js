@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH Random album
-// @version      0.1
+// @version      0.2
 // @description  Load a random album
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/torrents.php?id=*
+// @include      http*://redacted.ch/torrents.php?id=*
 // @grant        none
 // ==/UserScript==
 

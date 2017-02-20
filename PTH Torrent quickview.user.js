@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         PTH Torrent quickview
-// @version      0.4
+// @version      0.5
 // @description  Add a hover that shows the album art and files for a torrent from the artist page
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/artist.php?id=*
-// @include      http*://passtheheadphones.me/torrents.php?id=*
+// @include      http*://redacted.ch/artist.php?id=*
+// @include      http*://redacted.ch/torrents.php?id=*
 // @grant        none
 // ==/UserScript==
 

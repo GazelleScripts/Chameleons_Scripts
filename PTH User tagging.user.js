@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH User tagging
-// @version      0.81
+// @version      0.82
 // @description  Tag, ignore, highlight, and change avatars for users on PTH
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/*
+// @include      http*://redacted.ch/*
 // @grant        none
 // ==/UserScript==
 

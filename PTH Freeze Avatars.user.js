@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH Freeze Avatars
-// @version      0.1
+// @version      0.2
 // @description  Freeze the animated avatars on PTH
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/*
+// @include      http*://redacted.ch/*
 // @grant        none
 // ==/UserScript==
 

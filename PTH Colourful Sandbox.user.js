@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH Colourful Sandbox
-// @version      0.1
+// @version      0.2
 // @description  Give the different types of threads in the PTH sandbox different colours
 // @author       Chameleon
-// @include      http*://*passtheheadphones.me/*forumid=8*
+// @include      http*://*redacted.ch/*forumid=8*
 // @grant        none
 // ==/UserScript==
 

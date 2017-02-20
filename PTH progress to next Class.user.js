@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH progress to next Class
-// @version      0.5
+// @version      0.6
 // @description  Shows the progress to the next user classes
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/user.php?id=*
+// @include      http*://redacted.ch/user.php?id=*
 // @grant        none
 // ==/UserScript==
 

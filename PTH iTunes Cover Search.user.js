@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH iTunes Cover Search
-// @version      1.8
+// @version      1.9
 // @description  Search iTunes for cover art
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/*
+// @include      http*://redacted.ch/*
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 

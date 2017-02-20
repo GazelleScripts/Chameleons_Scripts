@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH Record label collages on search
-// @version      0.2
+// @version      0.3
 // @description  Show record label collages on searches that include a record label
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/torrents.php*recordlabel=*
+// @include      http*://redacted.ch/torrents.php*recordlabel=*
 // @grant        none
 // ==/UserScript==
 

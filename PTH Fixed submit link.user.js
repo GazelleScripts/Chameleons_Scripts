@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH Fixed submit link
-// @version      0.2
+// @version      0.3
 // @description  Add a link that can submit the upload form from anywhere on the page
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/upload.php*
+// @include      http*://redacted.ch/upload.php*
 // @grant        none
 // ==/UserScript==
 

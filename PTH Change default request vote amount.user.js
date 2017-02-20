@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH Change default request vote amount
-// @version      0.2
+// @version      0.4
 // @description  Set the default request vote amount when clicking the [+] vote
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/*
+// @include      http*://redacted.ch/*
 // @grant        none
 // ==/UserScript==
 

@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH Collector
-// @version      1.5
+// @version      1.6
 // @description  Download multiple torrents by some criteria on PTH
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/*
+// @include      http*://redacted.ch/*
 // @grant        none
 // @require      https://greasyfork.org/scripts/19855-jszip/code/jszip.js?version=126859
 // ==/UserScript==

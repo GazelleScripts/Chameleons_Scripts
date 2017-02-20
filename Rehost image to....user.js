@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Rehost image to...
-// @version      1.11
+// @version      1.12
 // @description  Rehost images to a whitelisted site by ctrl+shift+clicking them
 // @author       Chameleon
 // @include      *
@@ -12,7 +12,7 @@
 
 (function() {
   'use strict';
-  if(window.location.host == "passtheheadphones.me" && window.location.href.indexOf("threadid=1719") != -1)
+  if(window.location.host == "redacted.ch" && window.location.href.indexOf("threadid=1719") != -1)
     showSettings();
 
   var images = document.getElementsByTagName('img');

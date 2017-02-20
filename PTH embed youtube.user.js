@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH embed youtube
-// @version      0.1
+// @version      0.2
 // @description  Embed youtube videos on PTH forums
 // @author       Chameleon
-// @include      http*://*passtheheadphones.me/*
+// @include      http*://*redacted.ch/*
 // @grant        none
 // ==/UserScript==
 

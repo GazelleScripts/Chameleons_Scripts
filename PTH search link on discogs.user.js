@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         PTH search link on discogs
-// @version      0.65
+// @version      0.66
 // @description  Link to a search from discogs pages to PTH
 // @author       Chameleon
 // @include      http*://*discogs.com/*
-// @include      http*://passtheheadphones.me/upload.php*
+// @include      http*://redacted.ch/upload.php*
 // @grant        none
 // ==/UserScript==
 
@@ -13,7 +13,7 @@
   
   if(window.location.href.indexOf('https://www.discogs.com') != -1)
     showDiscogs();
-  else if(window.location.href.indexOf('passtheheadphones.me') != -1)
+  else if(window.location.href.indexOf('redacted.ch') != -1)
     showPTH();
 
 })();
@@ -72,31 +72,31 @@ function showDiscogs()
     div.appendChild(d1);
     
     var a=document.createElement('a');
-    a.href="https://passtheheadphones.me/artist.php?artistname="+artist;
+    a.href="https://redacted.ch/artist.php?artistname="+artist;
     a.innerHTML="Search artist";
     d1.appendChild(a);
     d1.appendChild(document.createElement('br'));
     
     var a=document.createElement('a');
-    a.href="https://passtheheadphones.me/torrents.php?searchstr="+encodeURIComponent(artist+' '+album);
+    a.href="https://redacted.ch/torrents.php?searchstr="+encodeURIComponent(artist+' '+album);
     a.innerHTML = 'Search album';
     d1.appendChild(a);
     d1.appendChild(document.createElement('br'));
     
     var a=document.createElement('a');
-    a.href="https://passtheheadphones.me/upload.php?edition=0&discogs="+encodeURIComponent(window.location.href);
+    a.href="https://redacted.ch/upload.php?edition=0&discogs="+encodeURIComponent(window.location.href);
     a.innerHTML = 'Upload original';
     d1.appendChild(a);
     d1.appendChild(document.createElement('br'));
     
     var a=document.createElement('a');
-    a.href="https://passtheheadphones.me/upload.php?discogs="+encodeURIComponent(window.location.href);
+    a.href="https://redacted.ch/upload.php?discogs="+encodeURIComponent(window.location.href);
     a.innerHTML = 'Upload edition';
     d1.appendChild(a);
     d1.appendChild(document.createElement('br'));
     
     /*var a=document.createElement('a');
-    a.href="https://passtheheadphones.me/artist.php?artistname="+artist;
+    a.href="https://redacted.ch/artist.php?artistname="+artist;
     //a.innerHTML = "pth";
     var img=document.createElement('img');
     img.src='https://ptpimg.me/2rwc77.png';
@@ -106,7 +106,7 @@ function showDiscogs()
     span.appendChild(a);
         
     var a=document.createElement('a');
-    a.href="https://passtheheadphones.me/torrents.php?searchstr="+encodeURIComponent(artist+' '+album);
+    a.href="https://redacted.ch/torrents.php?searchstr="+encodeURIComponent(artist+' '+album);
     //a.innerHTML = "pth";
     var img=document.createElement('img');
     img.src='https://ptpimg.me/2rwc77.png';
@@ -115,7 +115,7 @@ function showDiscogs()
     pTitle.appendChild(a);
         
     var a=document.createElement('a');
-    a.href="https://passtheheadphones.me/upload.php?discogs="+encodeURIComponent(window.location.href);
+    a.href="https://redacted.ch/upload.php?discogs="+encodeURIComponent(window.location.href);
     //a.innerHTML = "pth";
     var img=document.createElement('img');
     img.src='https://ptpimg.me/83k157.png';
@@ -126,7 +126,7 @@ function showDiscogs()
     pTitle.appendChild(a);
         
     var a=document.createElement('a');
-    a.href="https://passtheheadphones.me/upload.php?edition=0&discogs="+encodeURIComponent(window.location.href);
+    a.href="https://redacted.ch/upload.php?edition=0&discogs="+encodeURIComponent(window.location.href);
     //a.innerHTML = "pth";
     var img=document.createElement('img');
     img.src='https://ptpimg.me/83k157.png';

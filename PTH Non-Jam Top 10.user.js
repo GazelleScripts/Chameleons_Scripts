@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH Non-Jam Top 10
-// @version      0.3
+// @version      0.4
 // @description  Hide torrents with jam.band on the "Top 10"
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/*
+// @include      http*://redacted.ch/*
 // @include      http*://apollo.rip/*
 // @grant        none
 // ==/UserScript==
@@ -11,7 +11,7 @@
 (function() {
   'use strict';
 
-  if(window.location.href.indexOf('threadid=3392') != -1 && window.location.href.indexOf('passtheheadphones.me') != -1)
+  if(window.location.href.indexOf('threadid=3392') != -1 && window.location.href.indexOf('redacted.ch') != -1)
     showSettings();
   if(window.location.href.indexOf('threadid=4281') != -1 && window.location.href.indexOf('apollo.rip') != -1)
     showSettings();

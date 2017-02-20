@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH Remove required ratio if it's 0.00
-// @version      0.32
+// @version      0.33
 // @description  Remove required ratio either when it's 0.00 or always
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/*
+// @include      http*://redacted.ch/*
 // @grant        none
 // ==/UserScript==
 

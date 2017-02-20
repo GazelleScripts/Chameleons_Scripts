@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH hide forum posts
-// @version      0.3
+// @version      0.4
 // @description  Add ability to hide forum posts
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/*
+// @include      http*://redacted.ch/*
 // @grant        none
 // ==/UserScript==
 

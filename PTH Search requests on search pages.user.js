@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH Search requests on search pages
-// @version      0.1
+// @version      0.2
 // @description  Add a link to search pages to search for a request with the same search
 // @author       Chameleon
-// @include      http*://passtheheadphones.me/torrents.php*searchstr*
+// @include      http*://redacted.ch/torrents.php*searchstr*
 // @grant        none
 // ==/UserScript==
 

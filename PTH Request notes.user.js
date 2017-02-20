@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH Request notes
-// @version      0.1
+// @version      0.2
 // @description  Store notes on requests at PTH
 // @author       Chameleon
-// @include      http*://*passtheheadphones.me/requests.php*
+// @include      http*://*redacted.ch/requests.php*
 // @include      http*://*passthepopcorn.me/requests.php*
 // @grant        none
 // ==/UserScript==
