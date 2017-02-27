@@ -12,7 +12,7 @@
 (function() {
   'use strict';
 
-  if((window.location.href.indexOf("threadid=1781") != -1 && window.location.host.indexOf('headphones') != -1) || (window.location.href.indexOf("threadid=30532") != -1 && window.location.host.indexOf('popcorn') != -1))
+  if((window.location.href.indexOf("threadid=1781") != -1 && window.location.host.indexOf('redacted') != -1) || (window.location.href.indexOf("threadid=30532") != -1 && window.location.host.indexOf('popcorn') != -1))
     showSettings();
 
   var currentStats = {};
