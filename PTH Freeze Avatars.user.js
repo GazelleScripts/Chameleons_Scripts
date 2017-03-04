@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH Freeze Avatars
-// @version      0.2
+// @version      0.3
 // @description  Freeze the animated avatars on PTH
 // @author       Chameleon
 // @include      http*://redacted.ch/*
@@ -18,8 +18,8 @@
     if(avatar.src.match(/.gif$/))
     {
       var c = document.createElement('canvas');
-      var w = c.width = 150;
-      var h = c.height = 150;
+      var w = c.width = parseInt(getComputedStyle(avatar).width);
+      var h = c.height = parseInt(getComputedStyle(avatar).height);
       avatar.parentNode.replaceChild(c, avatar);
       var img=document.createElement('img');
       img.src=avatar.src;
