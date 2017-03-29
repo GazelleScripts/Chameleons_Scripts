@@ -227,6 +227,7 @@ function renderStats(number)
 
 function parseStats(string)
 {
+  string=string.replace(/,/g, '');
   var suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
   if(window.location.host.indexOf('popcorn') != -1)
     suffixes = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB'];
