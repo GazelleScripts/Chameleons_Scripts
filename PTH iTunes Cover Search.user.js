@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH iTunes Cover Search
-// @version      1.9
+// @version      2.0
 // @description  Search iTunes for cover art
 // @author       Chameleon
 // @include      http*://redacted.ch/*
