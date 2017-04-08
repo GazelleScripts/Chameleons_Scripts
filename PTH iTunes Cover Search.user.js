@@ -259,7 +259,7 @@ function showUpload()
   a.addEventListener('click', getAlbumUpload.bind(undefined, album, artist, country, search, image, imageTd, messageDiv, imageDiv), false);
 }
 
-function getAlbumUpload(album, artist, country, search, image, imageTd, messageDiv)
+function getAlbumUpload(album, artist, country, search, image, imageTd, messageDiv, imageDiv)
 {
   if(search.value.length === 0)
     search.value=(artist.value+' '+album.value).trim();
