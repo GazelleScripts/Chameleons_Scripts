@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH Torrent quickview
-// @version      0.5
+// @version      0.6
 // @description  Add a hover that shows the album art and files for a torrent from the artist page
 // @author       Chameleon
 // @include      http*://redacted.ch/artist.php?id=*
@@ -46,7 +46,7 @@ function mouseOver(tr, torrentid, groupid, event)
     var left=rect.left+window.scrollX-width+leftOffset-20;
     if(left < leftOffset)
       left=leftOffset;
-    div.setAttribute('style', 'position: absolute; top: '+top+'px; left: '+left+'px; width: '+(width-leftOffset)+'px; background: black; border-radius: 10px; padding: 10px;');
+    div.setAttribute('style', 'position: absolute; top: '+top+'px; left: '+left+'px; width: '+(width-leftOffset)+'px; background: black; color: white; border-radius: 10px; padding: 10px; z-index: 1000;');
     div.innerHTML = 'Loading data';
     div.addEventListener('mouseout', mouseOut.bind(undefined, tr, torrentid), false);
   }
