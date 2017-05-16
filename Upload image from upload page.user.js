@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Upload image from upload page
-// @version      1.4
+// @version      1.5
 // @description  Upload album art from within the PTH upload page
 // @author       Chameleon
 // @include      http*://*redacted.ch/upload.php*
@@ -12,8 +12,9 @@
 
 (function() {
   'use strict';
+  var settings=getSettings();
 
-  if(window.location.href.indexOf("threadid=1725") != -1)
+  if(window.location.href.indexOf("threadid=1725") != -1 || settings.showSettings)
     showSettings();
   else if(window.location.href.indexOf('upload.php') != -1)
   {
@@ -31,6 +32,8 @@ function showSettings(message)
   if(!div)
   {
     var before = document.getElementsByClassName('forum_post')[0];
+    if(!before)
+      before=document.getElementsByTagName('table')[1];
     div = document.createElement('div');
     div.setAttribute('id', 'rehostToSettings');
     before.parentNode.insertBefore(div, before);
@@ -44,6 +47,13 @@ function showSettings(message)
   a.href='javascript:void(0);';
   a.innerHTML = 'Use image host: '+settings.site;
   a.addEventListener('click', changeSite.bind(undefined, a, div), false);
+  div.appendChild(a);
+  div.appendChild(document.createElement('br'));
+
+  var a=document.createElement('a');
+  a.href='javascript:void(0);';
+  a.innerHTML = 'Show settings on upload page: '+(settings.showSettings ? 'true':'false');
+  a.addEventListener('click', changeShowSettings.bind(undefined, a, div), false);
   div.appendChild(a);
   div.appendChild(document.createElement('br'));
 
@@ -113,6 +123,15 @@ function changeSite(a, div)
   changeSettings(div);
 }
 
+function changeShowSettings(a, div)
+{
+  if(a.innerHTML.indexOf('false') != -1)
+    a.innerHTML = a.innerHTML.replace('false', 'true');
+  else
+    a.innerHTML = a.innerHTML.replace('true', 'false');
+  changeSettings(div);
+}
+
 function changeSettings(div, nul, message)
 {
   var settings = getSettings();
@@ -121,6 +140,11 @@ function changeSettings(div, nul, message)
     settings.site = 'imgur.com';
   else if(as[0].innerHTML.indexOf('ptpimg.me') != -1)
     settings.site = 'ptpimg.me';
+  
+  if(as[1].innerHTML.indexOf('false') != -1)
+    settings.showSettings=false;
+  else
+    settings.showSettings=true;
 
   var inputs=div.getElementsByTagName('input');
   settings.apiKey = inputs[0].value;
