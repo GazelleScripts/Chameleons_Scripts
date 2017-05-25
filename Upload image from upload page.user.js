@@ -14,7 +14,9 @@
   'use strict';
   var settings=getSettings();
 
-  if(window.location.href.indexOf("threadid=1725") != -1 || settings.showSettings)
+  if(settings.showSettings)
+    showSettings();
+  if(window.location.href.indexOf("threadid=1725") != -1)
     showSettings();
   else if(window.location.href.indexOf('upload.php') != -1)
   {
