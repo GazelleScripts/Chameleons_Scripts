@@ -7,6 +7,7 @@
 // @include      http*://*passthepopcorn.me/*
 // @grant        GM_getValue
 // @grant        GM_setValue
+// @namespace https://greasyfork.org/users/87476
 // ==/UserScript==
 
 (function() {
@@ -57,7 +58,10 @@
       li.setAttribute('class', 'user-info-bar__item');
     var before=document.getElementById('stats_ratio');
     before.parentNode.insertBefore(li, before);
-    li.innerHTML='Buffer: <span class="stat">'+renderStats((currentStats.up/1.05)-currentStats.down)+'</span>';
+    var buffer=renderStats((currentStats.up/1.05)-currentStats.down);
+    if(window.location.host.indexOf('redacted') != -1)
+      buffer=renderStats((currentStats.up/0.6)-currentStats.down);
+    li.innerHTML='Buffer: <span class="stat">'+buffer+'</span>';
   }
 
   var change = {up:currentStats.up-oldStats.up, down:currentStats.down-oldStats.down, ratio:Math.round((currentStats.ratio-oldStats.ratio)*100)/100};
@@ -65,26 +69,29 @@
     return;
   if(change.up != 0 || settings.noChange)
   {
-    statspans[0].innerHTML += ' ('+renderStats(change.up)+')';
+    statspans[0].innerHTML += ' <span class="stats_last up">('+renderStats(change.up)+')</span>';
     if(difTime)
       statspans[0].title = (prettyTime(difTime))+' ago';
   }
   if(change.down != 0 || settings.noChange)
   {
-    statspans[1].innerHTML += ' ('+renderStats(change.down)+')';
+    statspans[1].innerHTML += ' <span class="stats_last down">('+renderStats(change.down)+')</span>';
     if(difTime)
       statspans[1].title = (prettyTime(difTime))+' ago';
   }
   if((change.up != 0 || change.down != 0 || settings.noChange) && settings.showBuffer)
   {
     var span=li.getElementsByTagName('span')[0];
-    span.innerHTML += ' ('+renderStats((change.up/1.05)-change.down)+')</span>';
+    var buffer=renderStats((change.up/1.05)-change.down);
+    if(window.location.host.indexOf('redacted') != -1)
+      buffer=renderStats((change.up/0.6)-change.down);
+    span.innerHTML += ' <span class="stats_last buffer">('+buffer+')</span>';
     if(difTime)
       span.title = (prettyTime(difTime))+' ago';
   }
   if(change.ratio != 0 || settings.noChange)
   {
-    statspans[2].innerHTML += ' ('+change.ratio+')';
+    statspans[2].innerHTML += ' <span class="stats_last ratio">('+change.ratio+')</span>';
     if(difTime)
       statspans[2].title = (prettyTime(difTime))+' ago';
   }
