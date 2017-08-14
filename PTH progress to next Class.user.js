@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH progress to next Class
-// @version      0.6
+// @version      0.7
 // @description  Shows the progress to the next user classes
 // @author       Chameleon
 // @include      http*://redacted.ch/user.php?id=*
@@ -28,12 +28,12 @@ function renderStats(index)
 
   var requirements=[
     {title:'User', time: 0, upload: 0, ratio:0, torrents:0, perfectFLACs: 0, uniqueGroups: 0},
-    {title:'Member', time: 604800, upload: 10737418240, torrents:0, ratio:0.7, perfectFLACs: 0, uniqueGroups: 0},
-    {title:'Power User', time: 1209600, upload: 26843545600, torrents:5, ratio:1.05, perfectFLACs: 0, uniqueGroups: 0},
-    {title:'Elite', time: 2419200, upload: 107374182400, ratio:1.05, torrents:50, perfectFLACs: 0, uniqueGroups: 0},
-    {title:'Torrent Master', time: 4838400, upload: 536870912000, ratio:1.05, torrents:500, perfectFLACs: 0, uniqueGroups: 0},
-    {title:'Power TM', time: 4838400, upload: 536870912000, ratio:1.05, torrents:500, perfectFLACs: 0, uniqueGroups: 500},
-    {title:'Elite TM', time: 4838400, upload: 536870912000, ratio:1.05, torrents:500, perfectFLACs: 500, uniqueGroups: 500},
+    {title:'Member', time: 604800, upload: 10737418240, torrents:0, ratio:0.65, perfectFLACs: 0, uniqueGroups: 0},
+    {title:'Power User', time: 1209600, upload: 26843545600, torrents:5, ratio:0.65, perfectFLACs: 0, uniqueGroups: 0},
+    {title:'Elite', time: 2419200, upload: 107374182400, ratio:0.65, torrents:50, perfectFLACs: 0, uniqueGroups: 0},
+    {title:'Torrent Master', time: 4838400, upload: 536870912000, ratio:0.65, torrents:500, perfectFLACs: 0, uniqueGroups: 0},
+    {title:'Power TM', time: 4838400, upload: 536870912000, ratio:0.65, torrents:500, perfectFLACs: 0, uniqueGroups: 500},
+    {title:'Elite TM', time: 4838400, upload: 536870912000, ratio:0.65, torrents:500, perfectFLACs: 500, uniqueGroups: 500},
   ];
 
   var div=document.getElementsByClassName('box_userinfo_nextclass')[0];
