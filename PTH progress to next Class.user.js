@@ -84,7 +84,7 @@ function renderStats(index)
 
   var li=document.createElement('li');
   stats.appendChild(li);
-  var percent=Math.round((s.ratio/r.ratio)*100);
+  var percent=Math.floor((s.ratio/r.ratio)*100);
   var span=document.createElement('span');
   if(percent >= 100 || s.ratio == 'Infinite')
   {
@@ -105,7 +105,7 @@ function renderStats(index)
   if(r.time === 0)
     percent='∞';
   else
-    percent=Math.round((s.time/r.time)*100);
+    percent=Math.floor((s.time/r.time)*100);
   var span=document.createElement('span');
   if(r.time === 0 || percent >= 100)
   {
@@ -124,7 +124,7 @@ function renderStats(index)
   if(r.upload === 0)
     percent='∞';
   else
-    percent=Math.round((s.upload/r.upload)*100);
+    percent=Math.floor((s.upload/r.upload)*100);
   var span=document.createElement('span');
   if(r.upload === 0 || percent >= 100)
   {
@@ -143,7 +143,7 @@ function renderStats(index)
   if(r.torrents === 0)
     percent='∞';
   else
-    percent=Math.round((s.torrents/r.torrents)*100);
+    percent=Math.floor((s.torrents/r.torrents)*100);
   var span=document.createElement('span');
   if(r.torrents === 0 || percent >= 100)
   {
@@ -162,7 +162,7 @@ function renderStats(index)
   if(r.uniqueGroups === 0)
     percent='∞';
   else
-    percent=Math.round((s.uniqueGroups/r.uniqueGroups)*100);
+    percent=Math.floor((s.uniqueGroups/r.uniqueGroups)*100);
   var span=document.createElement('span');
   if(r.uniqueGroups === 0 || percent >= 100)
   {
@@ -181,7 +181,7 @@ function renderStats(index)
   if(r.perfectFLACs === 0)
     percent='∞';
   else
-    percent=Math.round((s.perfectFLACs/r.perfectFLACs)*100);
+    percent=Math.floor((s.perfectFLACs/r.perfectFLACs)*100);
   var span=document.createElement('span');
   if(r.perfectFLACs === 0 || percent >= 100)
   {
