@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH stats since last
-// @version      1.1
+// @version      1.2
 // @description  Displays the changes in stats on PTH and PTP
 // @author       Chameleon
 // @include      http*://*redacted.ch/*
@@ -21,6 +21,12 @@
   currentStats.up = parseStats(statspans[0].textContent);
   currentStats.down = parseStats(statspans[1].textContent);
   currentStats.ratio = parseFloat(statspans[2].textContent);
+  if(window.location.href.indexOf("redacted.ch") !== -1)
+  {
+    currentStats.up = parseStats(statspans[0].title);
+    currentStats.down = parseStats(statspans[1].title);
+    currentStats.ratio = parseFloat(statspans[2].title);
+  }
   if(isNaN(currentStats.ratio))
     currentStats.ratio = 0;
   currentStats.time=(new Date())*1;
@@ -43,7 +49,7 @@
   }
   else
     window.localStorage.lastStats = JSON.stringify(currentStats);
-  
+
   var difTime=false;
   if(oldStats.time)
   {
@@ -149,7 +155,7 @@ function showSettings()
   a.addEventListener('click', changeSetting.bind(undefined, a), false);
   div.appendChild(a);
   div.appendChild(document.createElement('br'));
-  
+
   var input=document.createElement('input');
   input.setAttribute('placeholder', 'Persist Time');
   input.type='number';
