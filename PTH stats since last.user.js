@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH stats since last
-// @version      1.2
+// @version      1.3
 // @description  Displays the changes in stats on PTH and PTP
 // @author       Chameleon
 // @include      http*://*redacted.ch/*
@@ -21,7 +21,7 @@
   currentStats.up = parseStats(statspans[0].textContent);
   currentStats.down = parseStats(statspans[1].textContent);
   currentStats.ratio = parseFloat(statspans[2].textContent);
-  if(window.location.href.indexOf("redacted.ch") !== -1)
+  if(window.location.href.indexOf("redacted.ch") !== -1 && !isNaN(parseFloat(statspans[0].title)))
   {
     currentStats.up = parseStats(statspans[0].title);
     currentStats.down = parseStats(statspans[1].title);
