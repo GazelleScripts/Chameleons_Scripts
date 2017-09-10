@@ -68,6 +68,7 @@
     if(window.location.host.indexOf('redacted') != -1)
       buffer=renderStats((currentStats.up/0.6)-currentStats.down);
     li.innerHTML='Buffer: <span class="stat">'+buffer+'</span>';
+    li.setAttribute('id', 'stats_buffer');
   }
 
   var change = {up:currentStats.up-oldStats.up, down:currentStats.down-oldStats.down, ratio:Math.round((currentStats.ratio-oldStats.ratio)*100)/100};
