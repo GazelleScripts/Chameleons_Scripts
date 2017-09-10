@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH stats since last
-// @version      1.3
+// @version      1.4
 // @description  Displays the changes in stats on PTH and PTP
 // @author       Chameleon
 // @include      http*://*redacted.ch/*
