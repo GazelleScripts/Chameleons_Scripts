@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Rehost image to...
-// @version      1.12
+// @version      1.13
 // @description  Rehost images to a whitelisted site by ctrl+shift+clicking them
 // @author       Chameleon
 // @include      *
@@ -13,7 +13,11 @@
 (function() {
   'use strict';
   if(window.location.host == "redacted.ch" && window.location.href.indexOf("threadid=1719") != -1)
-    showSettings();
+  {
+    var threadid=parseInt(window.location.href.split('threadid=')[1]);
+    if(threadid===1719)
+      showSettings();
+  }
 
   var images = document.getElementsByTagName('img');
   for(var i=0; i<images.length; i++)
