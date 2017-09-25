@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH colour format links
-// @version      0.4
+// @version      0.5
 // @description  Colour the links for torrents by format so they stand out
 // @author       Chameleon
 // @include      http*://redacted.ch/*
@@ -201,6 +201,8 @@ function hide()
         count++;
       }
     }
+    if(editionCount > 0 && editionCount === editionHidden && edition)
+      edition.style.display='none';
 
     var stats=document.getElementById('filterStats');
     if(count > 0)
