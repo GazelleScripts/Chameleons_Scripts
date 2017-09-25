@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH colour format links
-// @version      0.6
+// @version      0.7
 // @description  Colour the links for torrents by format so they stand out
 // @author       Chameleon
 // @include      http*://redacted.ch/*
@@ -26,6 +26,8 @@ function doColours()
                 ];
 
   var torrents = document.getElementsByClassName('group_torrent');
+  if(torrents.length === 0)
+    return;
   var edition;
   for(var k=0; k<torrents.length; k++)
   {
