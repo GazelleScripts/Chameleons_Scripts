@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH colour format links
-// @version      0.2
+// @version      0.3
 // @description  Colour the links for torrents by format so they stand out
 // @author       Chameleon
 // @include      http*://redacted.ch/*
@@ -171,7 +171,7 @@ function hide()
       var t=torrents[k];
       if(t.getAttribute('class').indexOf(' edition ') !== -1)
       {
-        if(editionCount === editionHidden && edition)
+        if(editionCount > 0 && editionCount === editionHidden && edition)
           edition.style.display='none';
         edition=t;
         editionCount=0;
