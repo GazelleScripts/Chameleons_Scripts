@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Rehost cover to...
-// @version      0.9
+// @version      0.91
 // @description  Rehost an existing cover image to a whitelisted site
 // @author       Chameleon
 // @include      http*://*redacted.ch/torrents.php?id=*
@@ -265,7 +265,8 @@ function submit(a, form, imageSrc, settings)
       continue;
     if(inputs[i].type === "checkbox")
     {
-      formData.append(inputs[i].name, inputs[i].checked);
+      if(inputs[i].checked)
+        formData.append(inputs[i].name, inputs[i].value);
     }
     else
       formData.append(inputs[i].name, inputs[i].value);
