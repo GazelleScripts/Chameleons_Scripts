@@ -1,17 +1,38 @@
 // ==UserScript==
 // @name         PTH Preview Tracks
-// @version      2.2
+// @version      2.3
 // @description  Embed youtube clips for the tracks of a torrent group
 // @author       Chameleon
 // @include      http*://redacted.ch/torrents.php?id=*
 // @include      http*://redacted.ch/index.php
 // @include      http*://redacted.ch/*threadid=1837*
 // @grant        none
+// @namespace https://greasyfork.org/users/87476
 // ==/UserScript==
 
 (function() {
   'use strict';
 
+  if(!document.hidden)
+    run();
+  else
+    document.addEventListener('visibilitychange', visibilityChanged);
+}());
+
+var scriptLoaded=false;
+
+function visibilityChanged()
+{
+  if(!document.hidden && !scriptLoaded)
+  {
+    run();
+    scriptLoaded=true;
+  }
+}
+
+function run()
+{
+  console.log(document.hidden);
   var settings=getSettings();
 
   if(settings.useYoutubeAPI)
@@ -34,7 +55,7 @@
     loadTorrent();
   else if(wH.indexOf('threadid=1837') != -1)
     showSettings();
-}());
+}
 
 function showSettings()
 {
