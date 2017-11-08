@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Similar Artists from WCD missing on RED
-// @version      0.3
+// @version      0.4
 // @description  Add a box to the sidebar with the missing Similar Artists from the WCD metadata
 // @author       Chameleon
 // @include      http*://*redacted.ch/artist.php?id=*
@@ -85,26 +85,69 @@ function artistpage()
   //box.innerHTML='Searching for artist "'+artist+'" in the WCD metadata';
   GM_xmlhttpRequest({method: "GET",
                      url: "http://159.89.252.33/artist.php?action=autocomplete&query="+encodeURIComponent(artist),
-                     onload: gotArtists.bind(undefined, ul, similar_artists)
+                     onload: gotArtists.bind(undefined, ul, similar_artists, artist)
                     });
 }
 
-function gotArtists(box, similar_artists, response)
+function login(box, similar_artists, artist)
 {
-  var r=JSON.parse(response.responseText);
+  GM_xmlhttpRequest({method: "POST",
+                     url: "http://159.89.252.33/login.php",
+                     headers: {
+                       "Content-Type": "application/x-www-form-urlencoded"
+                     },
+                     data: "username=Rippy&password=Rippy4Life&keeplogged=1",
+                     onload: loggedIn.bind(undefined, box, similar_artists, artist)
+                    });
+}
+
+function loggedIn(box, similar_artists, artist, response)
+{
+  document.body.innerHTML=response.responseText;
+  return;
+  GM_xmlhttpRequest({method: "GET",
+                     url: "http://159.89.252.33/artist.php?action=autocomplete&query="+encodeURIComponent(artist),
+                     onload: gotArtists.bind(undefined, box, similar_artists, artist)
+                    });
+}
+
+function gotArtists(box, similar_artists, artist, response)
+{
+  var r;
+  try
+  {
+    r=JSON.parse(response.responseText);
+  }
+  catch(err)
+  {
+    box.innerHTML='Not logged in on the <a href="http://159.89.252.33/login.php">WCD backup</a>';
+    //login(box, similar_artists, artist);
+    return;
+  }
   if(r.suggestions.length === 0)
   {
     box.innerHTML='Artist not found';
     return;
   }
   var artistID=r.suggestions[0].data;
+  var localArtistID=parseInt(window.location.href.split('?id=')[1]);
+
   GM_xmlhttpRequest({method: "GET",
-                     url: "http://159.89.252.33/ajax.php?action=similar_artists&id="+artistID+"&limit=1000",
-                     onload: gotSimilar.bind(undefined, box, similar_artists)
+                     url: "/ajax.php?action=similar_artists&id="+localArtistID+"&limit=1000",
+                     onload: gotSimilar1.bind(undefined, box, similar_artists, artistID)
                     });
 }
 
-function gotSimilar(box, similar_artists, response)
+function gotSimilar1(box, similar_artists, artistID, response)
+{
+  var r=JSON.parse(response.responseText);
+  GM_xmlhttpRequest({method: "GET",
+                     url: "http://159.89.252.33/ajax.php?action=similar_artists&id="+artistID+"&limit=1000",
+                     onload: gotSimilar.bind(undefined, box, similar_artists, r)
+                    });
+}
+
+function gotSimilar(box, similar_artists, names, response)
 {
   var r=JSON.parse(response.responseText);
   if(r===null)
@@ -114,13 +157,6 @@ function gotSimilar(box, similar_artists, response)
   }
   box.innerHTML='';
 
-  var s=similar_artists.getElementsByTagName('li');
-  var names=[];
-  for(var i=0; i<s.length; i++)
-  {
-    names.push(s[i].getElementsByTagName('a')[0].textContent);
-  }
-
   var final_artists=[];
   for(var i=0; i<r.length; i++)
   {
@@ -128,7 +164,7 @@ function gotSimilar(box, similar_artists, response)
     var found=false;
     for(var j=0; j<names.length; j++)
     {
-      if(names[j].toLowerCase() === a.name.toLowerCase())
+      if(names[j].name.toLowerCase() === a.name.toLowerCase())
       {
         found=true;
         break;
