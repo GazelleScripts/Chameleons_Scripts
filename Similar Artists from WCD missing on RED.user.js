@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Similar Artists from WCD missing on RED
-// @version      0.1
+// @version      0.2
 // @description  Add a box to the sidebar with the missing Similar Artists from the WCD metadata
 // @author       Chameleon
 // @include      http*://*redacted.ch/artist.php?id=*
@@ -66,7 +66,7 @@ function gotSimilar(box, similar_artists, response)
     var found=false;
     for(var j=0; j<names.length; j++)
     {
-      if(names[j] === a.name)
+      if(names[j].toLowerCase() === a.name.toLowerCase())
       {
         found=true;
         break;
@@ -94,26 +94,86 @@ function showMore(box, final_artists, a)
   if(a.textContent==='(Show more)')
   {
     a.innerHTML='(Show less)';
-    box.innerHTML='';
     showSimilar(box, final_artists, true);
   }
   else
   {
     a.innerHTML='(Show more)';
-    box.innerHTML='';
     showSimilar(box, final_artists, false);
   }
 }
 
 function showSimilar(box, final_artists, all)
 {
+  box.innerHTML='';
+  var links=[];
   for(var i=0; i<final_artists.length; i++)
   {
     var f=final_artists[i];
     var li=document.createElement('li');
     li.innerHTML='<a href="/artist.php?artistname='+encodeURIComponent(f)+'">'+f+'</a>';
+    var a=document.createElement('a');
+    li.appendChild(a);
+    a.setAttribute('style', 'float: right;');
+    a.innerHTML='(Add)';
+    a.href='javascript:void(0);';
+    a.addEventListener('click', addArtist.bind(undefined, a, f, false, [], 0));
+    links.push({a:a, f:f});
     box.appendChild(li);
-    if(i > 19 && !all)
+    if(i >= 19 && !all)
       break;
   }
+  var li=document.createElement('li');
+  box.appendChild(li);
+  li.setAttribute('style', 'text-align: center;');
+  var a=document.createElement('a');
+  li.appendChild(a);
+  a.href='javascript:void(0);';
+  a.innerHTML='(Add all to similar artists)';
+  a.addEventListener('click', addAll.bind(undefined, links));
+}
+
+function addAll(links)
+{
+  addArtist(links[0].a, links[0].f, true, links, 0);
+}
+
+function addArtist(a, f, addAll, links, index)
+{
+  if(a.innerHTML==='(Added)')
+  {
+    if(addAll)
+    {
+      index++;
+      if(index >= links.length)
+        return;
+      addArtist(links[index].a, links[index].f, addAll, links, index);
+    }
+    return;
+  }
+  a.innerHTML='(Adding)';
+
+  var inputs=document.getElementsByClassName('add_form')[0].getElementsByTagName('input');
+
+  GM_xmlhttpRequest({method: "POST",
+                     url: "/artist.php",
+                     headers: {
+                       "Content-Type": "application/x-www-form-urlencoded"
+                     },
+                     data: "action=add_similar&auth="+inputs[1].value+"&artistid="+inputs[2].value+"&artistname="+encodeURIComponent(f),
+                     onload: addedArtist.bind(undefined, a, addAll, links, index)
+                    });
+}
+
+function addedArtist(a, addAll, links, index, response)
+{
+  a.innerHTML='(Added)';
+  if(!addAll)
+    return;
+
+  index++;
+  if(index >= links.length)
+    return;
+
+  window.setTimeout(addArtist.bind(undefined, links[index].a, links[index].f, addAll, links, index), 1000);
 }
