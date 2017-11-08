@@ -1,15 +1,77 @@
 // ==UserScript==
 // @name         Similar Artists from WCD missing on RED
-// @version      0.2
+// @version      0.3
 // @description  Add a box to the sidebar with the missing Similar Artists from the WCD metadata
 // @author       Chameleon
 // @include      http*://*redacted.ch/artist.php?id=*
+// @include      http*://*redacted.ch/torrents.php?id=*
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
 (function() {
   'use strict';
 
+  if(window.location.href.indexOf('artist.php?id=') !== -1)
+  {
+    artistpage();
+  }
+  else if(window.location.href.indexOf('torrents.php?id=') !== -1)
+  {
+    torrentspage();
+  }
+
+})();
+
+function torrentspage()
+{
+  var h2=document.getElementsByTagName('h2')[0];
+  var artist=h2.getElementsByTagName('a')[0].textContent;
+  var album=h2.getElementsByTagName('span')[0].textContent;
+
+  //var wcd_collage_table=document.createElement('table');
+
+  GM_xmlhttpRequest({method: "GET",
+                     url: "http://159.89.252.33/torrents.php?artistname="+encodeURIComponent(artist)+"&groupname="+encodeURIComponent(album),
+                     onload: gotSearch
+                    });
+}
+
+function gotSearch(response)
+{
+  var div=document.createElement('div');
+  div.innerHTML=response.responseText;
+
+  var results=div.getElementsByClassName('group_info');
+  if(results.length === 0)
+    return;
+  var link=results[0].getElementsByTagName('a')[1].href.split('torrents.php?id=')[1];
+
+  GM_xmlhttpRequest({method: "GET",
+                     url: "http://159.89.252.33/torrents.php?id="+link,
+                     onload: gotAlbum
+                    });
+}
+
+function gotAlbum(response)
+{
+  var div=document.implementation.createHTMLDocument();
+  div.body.innerHTML=response.responseText;
+  //document.body.innerHTML=response.responseText;
+
+  var table=div.getElementsByClassName('collage_table')[0];
+  var as=table.getElementsByTagName('a');
+  for(var i=0; i<as.length; i++)
+  {
+    as[i].href='javascript:void(0)';
+  }
+  var td=table.getElementsByTagName('td')[0];
+  td.innerHTML=td.innerHTML.replace("is in", "was in")+" on WCD";
+  var homeTable=document.getElementsByClassName('collage_table')[0];
+  homeTable.parentNode.insertBefore(table, homeTable.nextElementSibling);
+}
+
+function artistpage()
+{
   var artist=document.title.split(' :: Redacted')[0];
   var similar_artists=document.getElementsByClassName('box_artists')[0];
 
@@ -25,7 +87,7 @@
                      url: "http://159.89.252.33/artist.php?action=autocomplete&query="+encodeURIComponent(artist),
                      onload: gotArtists.bind(undefined, ul, similar_artists)
                     });
-})();
+}
 
 function gotArtists(box, similar_artists, response)
 {
