@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Similar Artists from WCD missing on RED
-// @version      0.5
+// @version      0.6
 // @description  Add a box to the sidebar with the missing Similar Artists from the WCD metadata
 // @author       Chameleon
 // @include      http*://*redacted.ch/artist.php?id=*
@@ -120,11 +120,20 @@ function gotArtists1(box, similar_artists, artist, response)
     return;
   }
 
+  var d=document.createElement('div');
+  d.innerHTML=response.responseText;
+  var backup_similar=[];
+  var b=d.getElementsByClassName('box_artists')[0].getElementsByTagName('li');
+  for(var i=0; i<b.length; i++)
+  {
+    backup_similar.push({name:b[i].getElementsByTagName('a')[0].textContent});
+  }
+
   var artistID=parseInt(f[1]);
   var localArtistID=parseInt(window.location.href.split('?id=')[1]);
   GM_xmlhttpRequest({method: "GET",
                      url: "/ajax.php?action=similar_artists&id="+localArtistID+"&limit=1000",
-                     onload: gotSimilar1.bind(undefined, box, similar_artists, artistID)
+                     onload: gotSimilar1.bind(undefined, box, similar_artists, artistID, backup_similar)
                     });
 }
 
@@ -155,30 +164,40 @@ function gotArtists(box, similar_artists, artist, response)
                     });
 }
 
-function gotSimilar1(box, similar_artists, artistID, response)
+function gotSimilar1(box, similar_artists, artistID, backup_similar, response)
 {
   var r=JSON.parse(response.responseText);
   GM_xmlhttpRequest({method: "GET",
                      url: "http://159.89.252.33/ajax.php?action=similar_artists&id="+artistID+"&limit=1000",
-                     onload: gotSimilar.bind(undefined, box, similar_artists, r)
+                     onload: gotSimilar.bind(undefined, box, similar_artists, backup_similar, r)
                     });
 }
 
-function gotSimilar(box, similar_artists, names, response)
+function gotSimilar(box, similar_artists, backup_similar, names, response)
 {
+  var r=[];
   if(!response.responseText)
   {
-    box.innerHTML='WCD backup doesn\'t have the similar artists for this artist<br /><a href="'+response.finalUrl+'">Link</a>';
-    return;
+    if(backup_similar.length === 0)
+    {
+      box.innerHTML='WCD backup doesn\'t have the similar artists for this artist<br /><a href="'+response.finalUrl+'">Link</a>';
+      return;
+    }
+
+    r=backup_similar;
   }
-  var r=JSON.parse(response.responseText);
-  if(r===null)
+  else
   {
-    box.innerHTML='None found';
-    return;
+    var r=JSON.parse(response.responseText);
+    if(r===null)
+    {
+      box.innerHTML='None found';
+      return;
+    }
   }
   box.innerHTML='';
 
+  console.log(r);
   var final_artists=[];
   for(var i=0; i<r.length; i++)
   {
