@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Similar Artists from WCD missing on RED
-// @version      0.6
+// @version      0.7
 // @description  Add a box to the sidebar with the missing Similar Artists from the WCD metadata
 // @author       Chameleon
 // @include      http*://*redacted.ch/artist.php?id=*
@@ -197,7 +197,6 @@ function gotSimilar(box, similar_artists, backup_similar, names, response)
   }
   box.innerHTML='';
 
-  console.log(r);
   var final_artists=[];
   for(var i=0; i<r.length; i++)
   {
@@ -205,7 +204,7 @@ function gotSimilar(box, similar_artists, backup_similar, names, response)
     var found=false;
     for(var j=0; j<names.length; j++)
     {
-      if(names[j].name.toLowerCase() === a.name.toLowerCase())
+      if(convertName(names[j].name) === convertName(a.name))
       {
         found=true;
         break;
@@ -213,6 +212,12 @@ function gotSimilar(box, similar_artists, backup_similar, names, response)
     }
     if(!found)
       final_artists.push(a.name);
+  }
+
+  if(final_artists.length === 0)
+  {
+    box.innerHTML='No new similar artists from the WCD backup';
+    return;
   }
 
   if(final_artists.length > 20)
@@ -226,6 +231,11 @@ function gotSimilar(box, similar_artists, backup_similar, names, response)
     a.addEventListener('click', showMore.bind(undefined, box, final_artists, a));
   }
   showSimilar(box, final_artists, false);
+}
+
+function convertName(name)
+{
+  return name.replace('&', 'and').toLowerCase();
 }
 
 function showMore(box, final_artists, a)
