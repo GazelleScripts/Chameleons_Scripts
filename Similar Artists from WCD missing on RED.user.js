@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Similar Artists from WCD missing on RED
-// @version      0.4
+// @version      0.5
 // @description  Add a box to the sidebar with the missing Similar Artists from the WCD metadata
 // @author       Chameleon
 // @include      http*://*redacted.ch/artist.php?id=*
@@ -84,8 +84,8 @@ function artistpage()
   similar_artists.parentNode.insertBefore(box, similar_artists.nextElementSibling);
   //box.innerHTML='Searching for artist "'+artist+'" in the WCD metadata';
   GM_xmlhttpRequest({method: "GET",
-                     url: "http://159.89.252.33/artist.php?action=autocomplete&query="+encodeURIComponent(artist),
-                     onload: gotArtists.bind(undefined, ul, similar_artists, artist)
+                     url: "http://159.89.252.33/artist.php?artistname="+encodeURIComponent(artist),
+                     onload: gotArtists1.bind(undefined, ul, similar_artists, artist)
                     });
 }
 
@@ -108,6 +108,23 @@ function loggedIn(box, similar_artists, artist, response)
   GM_xmlhttpRequest({method: "GET",
                      url: "http://159.89.252.33/artist.php?action=autocomplete&query="+encodeURIComponent(artist),
                      onload: gotArtists.bind(undefined, box, similar_artists, artist)
+                    });
+}
+
+function gotArtists1(box, similar_artists, artist, response)
+{
+  var f=response.finalUrl.split("?id=");
+  if(f.length !== 2)
+  {
+    box.innerHTML='Artist not found';
+    return;
+  }
+
+  var artistID=parseInt(f[1]);
+  var localArtistID=parseInt(window.location.href.split('?id=')[1]);
+  GM_xmlhttpRequest({method: "GET",
+                     url: "/ajax.php?action=similar_artists&id="+localArtistID+"&limit=1000",
+                     onload: gotSimilar1.bind(undefined, box, similar_artists, artistID)
                     });
 }
 
@@ -149,6 +166,11 @@ function gotSimilar1(box, similar_artists, artistID, response)
 
 function gotSimilar(box, similar_artists, names, response)
 {
+  if(!response.responseText)
+  {
+    box.innerHTML='WCD backup doesn\'t have the similar artists for this artist<br /><a href="'+response.finalUrl+'">Link</a>';
+    return;
+  }
   var r=JSON.parse(response.responseText);
   if(r===null)
   {
