@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH colour format links
-// @version      0.7
+// @version      0.9
 // @description  Colour the links for torrents by format so they stand out
 // @author       Chameleon
 // @include      http*://redacted.ch/*
@@ -37,6 +37,11 @@ function doColours()
       edition=t;
       continue;
     }
+    else if(t.getAttribute('class').substr(-7) === "edition")
+    {
+      edition=t;
+      continue;
+    }
     else if(t.getAttribute('class').indexOf(' edition_') === -1)
       continue;
 
@@ -60,6 +65,8 @@ function doColours()
 
   var box=document.createElement('div');
   var inb=document.getElementsByClassName('sidebar')[0].firstElementChild.nextElementSibling;
+  if(window.localStorage.hideFilter==="true")
+    box.setAttribute('style', 'display: none;');
   inb.parentNode.insertBefore(box, inb);
   box.setAttribute('class', 'box');
   var h=document.createElement('div');
