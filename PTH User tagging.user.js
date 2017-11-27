@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         PTH User tagging
-// @version      0.82
+// @version      0.9
 // @description  Tag, ignore, highlight, and change avatars for users on PTH
 // @author       Chameleon
 // @include      http*://redacted.ch/*
 // @grant        none
+// @namespace https://greasyfork.org/users/87476
 // ==/UserScript==
 
 (function() {
@@ -20,6 +21,11 @@
     a.href='javascript:void(0);';
     a.addEventListener('click', openTags.bind(undefined, username, undefined), false);
     document.getElementsByClassName('linkbox')[0].appendChild(a);
+
+    var avatar=document.getElementsByClassName('box_image_avatar')[0].getElementsByTagName('img')[0];
+    avatar.setAttribute('originalAvatar', avatar.src);
+
+    setProfile();
   }
 
   var posts=document.getElementsByClassName('forum_post');
@@ -60,6 +66,31 @@
 
   addTags();
 })();
+
+function setProfile()
+{
+  if(window.location.href.indexOf('user.php?id=') === -1)
+    return;
+  var user=getUser(document.getElementsByTagName('h2')[0].firstElementChild.textContent)[0];
+  var avatar=document.getElementsByClassName('box_image_avatar')[0].getElementsByTagName('img')[0];
+  if(user.replacementAvatar)
+  {
+    avatar.src=user.replacementAvatar;
+  }
+  else
+  {
+    avatar.src=avatar.getAttribute('originalAvatar');
+  }
+  if(user.usernameColour)
+  {
+    var username=document.getElementsByTagName('h2')[0].getElementsByTagName('a')[0];
+    username.style.color=user.usernameColour;
+  }
+  if(user.customTitle)
+  {
+    document.getElementsByClassName('user_title')[0].innerHTML='('+user.customTitle+')';
+  }
+}
 
 
 function checkHeight(height)
@@ -499,6 +530,7 @@ function saveAndClose(div, username, table)
 {
   resetTags();
   addTags();
+  setProfile();
   div.parentNode.removeChild(div);
 }
 
