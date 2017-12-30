@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name         PTH Non-Jam Top 10
-// @version      0.4
+// @version      0.5
 // @description  Hide torrents with jam.band on the "Top 10"
 // @author       Chameleon
 // @include      http*://redacted.ch/*
 // @include      http*://apollo.rip/*
 // @grant        none
+// @namespace https://greasyfork.org/users/87476
 // ==/UserScript==
 
 (function() {
@@ -49,6 +50,16 @@ function filterTop100()
           break;
         }
       }
+      var artist=trs[j].getElementsByTagName('a')[1].textContent;
+      for(var k=0; k<settings.artists.length; k++)
+      {
+        if(artist === settings.artists[k] || count >= 10)
+        {
+          trs[j].style.display='none';
+          hasTag=true;
+          break;
+        }
+      }
       if(!hasTag)
         count++;
     }
@@ -71,15 +82,28 @@ function showSettings(message)
   var settings = getSettings();
 
   var labelStyle = '';
-  
+
   var label = document.createElement('span');
-  label.setAttribute('style', labelStyle);
+  label.setAttribute('style', labelStyle+' margin-left: 10px;');
   label.innerHTML = 'Ignore Tags: ';
   div.appendChild(label);
   var input=document.createElement('input');
   input.setAttribute('style', 'width: 20em;');
   input.placeholder='Ignore torrents with these tags';
   input.value = settings.blacklist ? settings.blacklist.join(', '):'';
+  div.appendChild(input);
+  input.addEventListener('change', changeSettings.bind(undefined, div), false);
+
+  div.appendChild(document.createElement('br'));
+
+  var label = document.createElement('span');
+  label.setAttribute('style', labelStyle);
+  label.innerHTML = 'Ignore Artists: ';
+  div.appendChild(label);
+  var input=document.createElement('input');
+  input.setAttribute('style', 'width: 20em;');
+  input.placeholder='Ignore torrents with these artists';
+  input.value = settings.artists ? settings.artists.join(', '):'';
   div.appendChild(input);
   input.addEventListener('change', changeSettings.bind(undefined, div), false);
 
@@ -96,6 +120,7 @@ function changeSettings(div, nul, message)
   var inputs=div.getElementsByTagName('input');
 
   settings.blacklist = inputs[0].value.split(', ');
+  settings.artists = inputs[1].value.split(', ');
 
   window.localStorage.nonJamTop10Settings = JSON.stringify(settings);
   showSettings(message);
