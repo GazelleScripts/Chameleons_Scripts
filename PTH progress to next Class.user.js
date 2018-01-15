@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH progress to next Class
-// @version      0.7
+// @version      0.8
 // @description  Shows the progress to the next user classes
 // @author       Chameleon
 // @include      http*://redacted.ch/user.php?id=*
@@ -238,7 +238,7 @@ function getCurrentStats()
   var time=((new Date())-(new Date(document.getElementsByClassName('time')[0].title+' UTC')))/1000;
   var upload=unPretty(document.getElementsByClassName('box_userinfo_stats')[0].getElementsByTagName('li')[2].title);
   var torrents=parseInt(document.getElementsByClassName('box_userinfo_percentile')[0].getElementsByTagName('li')[2].title.replace(',', ''));
-  var ratio=document.getElementsByClassName('box_userinfo_stats')[0].getElementsByTagName('li')[4].getElementsByTagName('span')[0].title.replace(',', '');
+  var ratio=document.getElementsByClassName('box_userinfo_stats')[0].getElementsByTagName('li')[5].getElementsByTagName('span')[0].title.replace(',', '');
   var perfectFLACs=parseInt(document.getElementById('comm_perfectflac').textContent.split(': ')[1].replace(',', ''));
   var uniqueGroups=parseInt(document.getElementById('comm_uniquegroup').textContent.split(': ')[1].replace(',', ''));
 
