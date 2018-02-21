@@ -36,6 +36,8 @@ function showSettings(message)
     var before = document.getElementsByClassName('forum_post')[0];
     if(!before)
       before=document.getElementsByTagName('table')[1];
+    if(!before)
+      before=document.getElementsByClassName('box')[0];
     div = document.createElement('div');
     div.setAttribute('id', 'rehostToSettings');
     before.parentNode.insertBefore(div, before);
