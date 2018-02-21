@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Upload image from upload page
-// @version      1.5
+// @version      1.6
 // @description  Upload album art from within the PTH upload page
 // @author       Chameleon
 // @include      http*://*redacted.ch/upload.php*
