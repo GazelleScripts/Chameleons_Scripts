@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH Colourise classes
-// @version      0.2
+// @version      0.3
 // @description  Set the class titles unique colours
 // @author       Chameleon
 // @include      http*://redacted.ch/*
