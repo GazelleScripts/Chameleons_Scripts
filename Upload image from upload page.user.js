@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Upload image from upload page
-// @version      1.5
+// @version      1.7
 // @description  Upload album art from within the PTH upload page
 // @author       Chameleon
 // @include      http*://*redacted.ch/upload.php*
@@ -281,7 +281,7 @@ function rehost(imageInput, span)
     xhr.send(formData);
   }
   else if(settings.site == 'ptpimg.me')
-  {    
+  {
     if(!settings.apiKey || settings.apiKey.length != 36)
     {
       a.innerHTML = 'No valid ptpimg.me API key set';
@@ -410,7 +410,7 @@ function upload(status, file)
       url: 'https://ptpimg.me/upload.php',
       //binary: true,
       data: formData,
-      /* headers: {
+     /* headers: {
         "Content-Type": "multipart/form-data"
       },*/
       onload: function(response) {
