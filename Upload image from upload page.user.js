@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Upload image from upload page
-// @version      1.6
+// @version      1.5
 // @description  Upload album art from within the PTH upload page
 // @author       Chameleon
 // @include      http*://*redacted.ch/upload.php*
@@ -9,6 +9,16 @@
 // @include      http*://*redacted.ch/torrents.php*action=editgroup*
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
+
+unsafeWindow.Categories=function c(){
+  ajax.get('ajax.php?action=upload_section&categoryid=' + $('#categories').raw().value, function (response) {
+    $('#dynamic_form').raw().innerHTML = response;
+    initMultiButtons();
+    // Evaluate the code that generates previews.
+    eval($('#dynamic_form script.preview_code').html());
+    showUpload();
+  });
+};
 
 (function() {
   'use strict';
@@ -144,7 +154,7 @@ function changeSettings(div, nul, message)
     settings.site = 'imgur.com';
   else if(as[0].innerHTML.indexOf('ptpimg.me') != -1)
     settings.site = 'ptpimg.me';
-  
+
   if(as[1].innerHTML.indexOf('false') != -1)
     settings.showSettings=false;
   else
@@ -400,7 +410,7 @@ function upload(status, file)
       url: 'https://ptpimg.me/upload.php',
       //binary: true,
       data: formData,
-     /* headers: {
+      /* headers: {
         "Content-Type": "multipart/form-data"
       },*/
       onload: function(response) {
