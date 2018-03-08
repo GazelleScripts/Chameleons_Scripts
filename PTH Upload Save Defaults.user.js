@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name         PTH Upload Save Defaults
-// @version      1.2
+// @version      1.3
 // @description  Save the dropdown menu selections on the upload form and automatically set them on page load
 // @author       Chameleon
 // @include      http*://redacted.ch/upload.php*
 // @grant        none
 // @run-at       document-idle
+// @namespace https://greasyfork.org/users/87476
 // ==/UserScript==
 
 (function() {
@@ -51,7 +52,7 @@ function loadOptions(addExtra)
   }
   if(options.scene)
     document.getElementById('scene').checked=true;
-  var selects=document.getElementsByTagName('select');
+  //var selects=document.getElementsByTagName('select');
   for(var i=0; i<options.selects.length; i++)
   {
     var s=options.selects[i];
@@ -65,7 +66,7 @@ function loadOptions(addExtra)
     {
       var evt = document.createEvent("HTMLEvents");
       evt.initEvent("change", false, true);
-      selects[i].dispatchEvent(evt);
+      dropdown.dispatchEvent(evt);
       if(dropdown.id == "format" && s.index == 2)
         document.getElementById('upload_logs').setAttribute('class', '');
     }
