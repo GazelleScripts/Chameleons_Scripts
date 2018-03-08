@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH Upload Save Defaults
-// @version      1.3
+// @version      1.4
 // @description  Save the dropdown menu selections on the upload form and automatically set them on page load
 // @author       Chameleon
 // @include      http*://redacted.ch/upload.php*
