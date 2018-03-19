@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name         PTH Autofill from torrent
-// @version      1.5
+// @version      1.6
 // @description  Attempt to read the .torrent file and fill in the artist and album
 // @author       Chameleon
 // @include      http*://redacted.ch/upload.php*
 // @grant        none
 // @run-at       document-idle
+// @namespace https://greasyfork.org/users/87476
 // ==/UserScript==
 
 (function() {
@@ -101,6 +102,13 @@ function fileAdded(a, format, bitrate, full, event)
   var file=event.target.files[0];
   if(!file)
     return;
+
+  var type=document.getElementById('categories').selectedOptions[0].textContent;
+  if(type==="E-Books" || type==="Audiobooks")
+  {
+    document.getElementById('title').value=file.name.replace(/.torrent$/, '');
+    return;
+  }
 
   if(full)
   {
