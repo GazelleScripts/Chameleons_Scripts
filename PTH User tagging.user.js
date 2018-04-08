@@ -1,28 +1,55 @@
 // ==UserScript==
 // @name         PTH User tagging
-// @version      0.9
-// @description  Tag, ignore, highlight, and change avatars for users on PTH
+// @version      1.0
+// @description  Tag, ignore, highlight, and change avatars for users on PTH and PTP
 // @author       Chameleon
 // @include      http*://redacted.ch/*
+// @include      http*://passthepopcorn.me/*
 // @grant        none
 // @namespace https://greasyfork.org/users/87476
 // ==/UserScript==
 
+var current_site;
+
 (function() {
   'use strict';
+  var h=window.location.host;
+  if(h==="redacted.ch")
+    current_site='RED';
+  else if(h==="passthepopcorn.me")
+    current_site='PTP';
 
   window.setTimeout(checkHeight.bind(undefined, document.body.clientHeight), 800);
 
   if(window.location.href.indexOf('user.php?id=') != -1)
   {
-    var username=document.getElementsByTagName('h2')[0].getElementsByTagName('a')[0].textContent;
+    var username;
+    if(current_site==="RED")
+      username=document.getElementsByTagName('h2')[0].getElementsByTagName('a')[0].textContent;
+    else if(current_site==="PTP")
+      username=document.getElementsByTagName('h2')[0].textContent;
     var a=document.createElement('a');
-    a.innerHTML = '[User tags]';
     a.href='javascript:void(0);';
     a.addEventListener('click', openTags.bind(undefined, username, undefined), false);
-    document.getElementsByClassName('linkbox')[0].appendChild(a);
+    if(current_site==="RED")
+    {
+      a.innerHTML = '[User tags]';
+      document.getElementsByClassName('linkbox')[0].appendChild(a);
+    }
+    else if(current_site==="PTP")
+    {
+      var e=document.getElementsByClassName('linkbox')[0];
+      e.appendChild(document.createTextNode(' ['));
+      a.innerHTML='User Tags';
+      e.appendChild(a);
+      e.appendChild(document.createTextNode(']'));
+    }
 
-    var avatar=document.getElementsByClassName('box_image_avatar')[0].getElementsByTagName('img')[0];
+    var avatar;
+    if(current_site==="RED")
+      avatar=document.getElementsByClassName('box_image_avatar')[0].getElementsByTagName('img')[0];
+    else if(current_site==="PTP")
+      avatar=document.getElementsByClassName('sidebar-cover-image')[0];
     avatar.setAttribute('originalAvatar', avatar.src);
 
     setProfile();
@@ -34,18 +61,28 @@
     var p=posts[i];
     if(p.getAttribute('class').indexOf('preview_wrap') != -1)
       continue;
-    var links=p.getElementsByTagName('td')[0].firstElementChild;
+    var links;
+    if(current_site==="RED")
+      links=p.getElementsByTagName('td')[0].firstElementChild;
+    else if(current_site==="PTP")
+      links=p.getElementsByTagName('span')[0];
     var username=p.getElementsByTagName('strong')[0].getElementsByTagName('a')[0].textContent;
 
     var a=document.createElement('a');
     a.href='javascript:void(0);';
     a.innerHTML='Tag';
+    if(current_site==="PTP")
+      a.innerHTML='[Tag]';
     a.setAttribute('class', 'brackets');
     a.addEventListener('click', openTags.bind(undefined, username, p), false);
     links.appendChild(document.createTextNode(' - '));
     links.appendChild(a);
 
-    var img=p.getElementsByTagName('img')[0];
+    var img;
+    if(current_site==="RED")
+      img=p.getElementsByTagName('img')[0];
+    else if(current_site==="PTP")
+      img=p.getElementsByClassName('forum-post__avatar__image')[0];
     if(img)
     {
       img.setAttribute('originalAvatar', img.src);
@@ -71,8 +108,17 @@ function setProfile()
 {
   if(window.location.href.indexOf('user.php?id=') === -1)
     return;
-  var user=getUser(document.getElementsByTagName('h2')[0].firstElementChild.textContent)[0];
-  var avatar=document.getElementsByClassName('box_image_avatar')[0].getElementsByTagName('img')[0];
+  var user;
+  if(current_site==="RED")
+    user=document.getElementsByTagName('h2')[0].getElementsByTagName('a')[0].textContent;
+  else if(current_site==="PTP")
+    user=document.getElementsByTagName('h2')[0].textContent;
+  user=getUser(user)[0];
+  var avatar;
+    if(current_site==="RED")
+      avatar=document.getElementsByClassName('box_image_avatar')[0].getElementsByTagName('img')[0];
+    else if(current_site==="PTP")
+      avatar=document.getElementsByClassName('sidebar-cover-image')[0];
   if(user.replacementAvatar)
   {
     avatar.src=user.replacementAvatar;
@@ -83,8 +129,13 @@ function setProfile()
   }
   if(user.usernameColour)
   {
-    var username=document.getElementsByTagName('h2')[0].getElementsByTagName('a')[0];
+    var username;
+    if(current_site==="RED")
+      username=document.getElementsByTagName('h2')[0].getElementsByTagName('a')[0];
+    else if(current_site==="PTP")
+      username=document.getElementsByTagName('h2')[0];
     username.style.color=user.usernameColour;
+    console.log(username);
   }
   if(user.customTitle)
   {
@@ -166,10 +217,19 @@ function resetTags()
   }
 
   var posts=document.getElementsByClassName('forum_post');
-  for(var i=0; i<posts.length-1; i++)
+  var length;
+  if(current_site==="RED")
+    length=posts.length-1;
+  else if(current_site==="PTP")
+    length=posts.length;
+  for(var i=0; i<length; i++)
   {
     var p=posts[i];
-    var avatar=p.getElementsByClassName('avatar')[0];
+    var avatar;
+    if(current_site==="RED")
+      avatar=p.getElementsByClassName('avatar')[0];
+    else if(current_site==="PTP")
+      avatar=p.getElementsByClassName('forum-post__avatar')[0];
 
     var postTable=p;
 
@@ -199,7 +259,11 @@ function resetTags()
     }
     u.setAttribute('style', '');
     postTable.setAttribute('style', '');
-    var tr=postTable.getElementsByTagName('tr')[1];
+    var tr;
+    if(current_site==="RED")
+      tr=postTable.getElementsByTagName('tr')[1];
+    else if(current_site==="PTP")
+      tr=postTable.getElementsByClassName('forum-post__avatar-and-body')[0];
     if(tr.getAttribute('stayHidden')!=="true")
     {
       tr.style.display='';
@@ -247,10 +311,19 @@ function addTags()
   }
 
   var posts=document.getElementsByClassName('forum_post');
-  for(var i=0; i<posts.length-1; i++)
+  var length;
+  if(current_site==="RED")
+    length=posts.length-1;
+  else if(current_site==="PTP")
+    length=posts.length;
+  for(var i=0; i<length; i++)
   {
     var p=posts[i];
-    var avatar=p.getElementsByClassName('avatar')[0];
+    var avatar;
+    if(current_site==="RED")
+      avatar=p.getElementsByClassName('avatar')[0];
+    else if(current_site==="PTP")
+      avatar=p.getElementsByClassName('forum-post__avatar')[0];
 
     var postTable=p;
 
@@ -339,7 +412,13 @@ function addTags()
     }
     if(user.softIgnore)
     {
-      postTable.getElementsByTagName('tr')[1].style.display='none';
+
+      var tr;
+      if(current_site==="RED")
+        tr=postTable.getElementsByTagName('tr')[1];
+      else if(current_site==="PTP")
+        tr=postTable.getElementsByClassName('forum-post__avatar-and-body')[0];
+      tr.style.display='none';
     }
     if(user.hardIgnore)
     {
