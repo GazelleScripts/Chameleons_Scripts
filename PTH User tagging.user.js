@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH User tagging
-// @version      1.0
+// @version      1.1
 // @description  Tag, ignore, highlight, and change avatars for users on PTH and PTP
 // @author       Chameleon
 // @include      http*://redacted.ch/*
@@ -135,7 +135,6 @@ function setProfile()
     else if(current_site==="PTP")
       username=document.getElementsByTagName('h2')[0];
     username.style.color=user.usernameColour;
-    console.log(username);
   }
   if(user.customTitle)
   {
@@ -450,6 +449,12 @@ function toggleQuote(a, q)
   }
 }
 
+function setEmpty(input)
+{
+  input.value="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E";
+  input.dispatchEvent(new Event('change'));
+}
+
 function openTags(username, postTable)
 {
   var div=document.getElementById('chameleonTagsDiv');
@@ -465,10 +470,16 @@ function openTags(username, postTable)
   var user=getUser(username)[0];
 
   var input=document.createElement('input');
-  div.appendChild(input);
   input.placeholder='Replacement avatar URL';
   input.value = user.replacementAvatar ? user.replacementAvatar : '';
   input.addEventListener('change', changeTags.bind(undefined, div, username, postTable, input), false);
+  var a=document.createElement('a');
+  a.href='javascript:void(0);';
+  a.setAttribute('style', 'display:block;');
+  a.innerHTML="Set avatar to empty image";
+  a.addEventListener('click', setEmpty.bind(undefined, input));
+  div.appendChild(a);
+  div.appendChild(input);
 
   div.appendChild(document.createElement('br'));
 
