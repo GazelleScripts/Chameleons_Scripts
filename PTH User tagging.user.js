@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH User tagging
-// @version      1.1
+// @version      1.2
 // @description  Tag, ignore, highlight, and change avatars for users on PTH and PTP
 // @author       Chameleon
 // @include      http*://redacted.ch/*
@@ -574,28 +574,28 @@ function changeTags(div, username, table, a)
   user.tag=textareas[0].value;
 
   var as=div.getElementsByTagName('a');
-  if(as[0] == a)
+  if(as[1] == a)
   {
     if(a.innerHTML.indexOf('On') != -1)
       user.showTag=false;
     else
       user.showTag=true;
   }
-  if(as[1] == a)
+  if(as[2] == a)
   {
     if(a.innerHTML.indexOf('On') != -1)
       user.showTagInHeader=false;
     else
       user.showTagInHeader=true;
   }
-  if(as[2] == a)
+  if(as[3] == a)
   {
     if(a.innerHTML.indexOf('On') != -1)
       user.softIgnore=false;
     else
       user.softIgnore=true;
   }
-  if(as[3] == a)
+  if(as[4] == a)
   {
     if(a.innerHTML.indexOf('On') != -1)
       user.hardIgnore=false;
