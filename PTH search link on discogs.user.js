@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name         PTH search link on discogs
-// @version      0.66
+// @version      0.67
 // @description  Link to a search from discogs pages to PTH
 // @author       Chameleon
 // @include      http*://*discogs.com/*
 // @include      http*://redacted.ch/upload.php*
 // @grant        none
+// @namespace https://greasyfork.org/users/87476
 // ==/UserScript==
 
 (function() {
@@ -49,8 +50,10 @@ function showDiscogs()
   var pTitle=document.getElementById('profile_title');
   if(pTitle)
   {
-    var album = pTitle.getElementsByTagName('span');
-    album=album[album.length-1].textContent.trim();
+    var albumNodes = pTitle.childNodes;
+    var album=albumNodes[albumNodes.length-1].textContent.trim();
+    if(album==="")
+      album=albumNodes[albumNodes.length-2].textContent.trim();
     
     var span=pTitle.getElementsByTagName('a')[0].parentNode;
     var artist=span.getAttribute('title').replace(/\(.*\)/g, '');
