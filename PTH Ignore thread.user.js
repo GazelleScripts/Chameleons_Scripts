@@ -1,24 +1,55 @@
 // ==UserScript==
 // @name         PTH Ignore thread
-// @version      0.3
+// @version      0.4
 // @description  Hide threads in subforum view
 // @author       Chameleon
 // @include      http*://redacted.ch/forums.php?*action=viewforum*
+// @include      http*://redacted.ch/forums.php
 // @grant        none
+// @namespace https://greasyfork.org/users/87476
 // ==/UserScript==
 
 (function() {
   'use strict';
 
-  var showHidden=document.createElement('a');
-  showHidden.href='javascript:void(0);';
-  showHidden.setAttribute('class', 'brackets');
-  document.getElementsByClassName('linkbox')[0].appendChild(showHidden);
-  showHidden.setAttribute('id', 'ignoreToggle');
-  showHidden.addEventListener('click', toggleHidden.bind(undefined, showHidden), false);
 
-  hide();
+  if(window.location.href.indexOf('viewforum') !== -1)
+  {
+    var showHidden=document.createElement('a');
+    showHidden.href='javascript:void(0);';
+    showHidden.setAttribute('class', 'brackets');
+    document.getElementsByClassName('linkbox')[0].appendChild(showHidden);
+    showHidden.setAttribute('id', 'ignoreToggle');
+    showHidden.addEventListener('click', toggleHidden.bind(undefined, showHidden), false);
+
+    hide();
+  }
+  else
+    hideForum();
 })();
+
+function hideForum()
+{
+  var ignored=getIgnored();
+
+  var trs=document.getElementsByTagName('tr');
+  for(var i=0; i<trs.length; i++)
+  {
+    var tr=trs[i];
+    var sp=tr.innerHTML.split('viewthread&amp;threadid=');
+    if(sp.length == 1)
+      continue;
+    var threadId=parseInt(sp[1]);
+
+    for(var j=0; j<ignored.length; j++)
+    {
+      if(threadId === ignored[j])
+      {
+        tr.getElementsByTagName('td')[2].innerHTML='';
+      }
+    }
+  }
+}
 
 function toggleHidden(a)
 {
