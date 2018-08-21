@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Rehost cover to...
-// @version      0.91
+// @version      1.00
 // @description  Rehost an existing cover image to a whitelisted site
 // @author       Chameleon
 // @include      http*://*redacted.ch/torrents.php?id=*
@@ -263,6 +263,8 @@ function submit(a, form, imageSrc, settings)
   {
     if(inputs[i].name === "")
       continue;
+    if(inputs[i].name==='summary')
+      inputs[i].value="Rehosted to "+settings.site+" with Rehost Cover user script";
     if(inputs[i].type === "checkbox")
     {
       if(inputs[i].checked)
