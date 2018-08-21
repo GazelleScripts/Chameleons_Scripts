@@ -263,8 +263,6 @@ function submit(a, form, imageSrc, settings)
   {
     if(inputs[i].name === "")
       continue;
-    if(inputs[i].name==='summary')
-      inputs[i].value="Rehosted to "+settings.site+" with Rehost Cover user script";
     if(inputs[i].type === "checkbox")
     {
       if(inputs[i].checked)
