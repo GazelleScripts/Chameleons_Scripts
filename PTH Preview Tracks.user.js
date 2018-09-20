@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH Preview Tracks
-// @version      2.3
+// @version      2.4
 // @description  Embed youtube clips for the tracks of a torrent group
 // @author       Chameleon
 // @include      http*://redacted.ch/torrents.php?id=*
@@ -924,7 +924,15 @@ function addEmbed(t, span, videoId)
     iframe = iframe[0];
   iframe.src='https://www.youtube.com/embed/'+videoId+'?autoplay=1';
   //iframe.setAttribute('autoplay', true);
-  span.innerHTML = 'Added youtube embed';
+  span.innerHTML = ' Added youtube embed';
+  var link=document.getElementById('youtubeLink');
+  if(link)
+    link.parentNode.removeChild(link);
+  link=document.createElement('a');
+  span.parentNode.insertBefore(link, span);
+  link.href='https://youtu.be/'+videoId;
+  link.innerHTML='(Link)';
+  link.id='youtubeLink';
   window.setTimeout(clear.bind(undefined, span), 5000);
 }
 
