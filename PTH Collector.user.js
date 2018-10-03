@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name         PTH Collector
-// @version      1.6
+// @version      1.7
 // @description  Download multiple torrents by some criteria on PTH
 // @author       Chameleon
 // @include      http*://redacted.ch/*
 // @grant        none
 // @require      https://greasyfork.org/scripts/19855-jszip/code/jszip.js?version=126859
+// @namespace https://greasyfork.org/users/87476
 // ==/UserScript==
 
 (function() {
@@ -243,7 +244,34 @@ function addToX(compileFunc)
   a.addEventListener('click', compileFunc.bind(undefined, {format:format, bitrate:bitrate, media:media, type:type, minSeedCount:minSeedCount}, messageDiv, true), false);
 
 
+  div.appendChild(document.createTextNode(' | '));
+  var a=document.createElement('a');
+  div.appendChild(a);
+  a.href='javascript:void(0);';
+  a.innerHTML = 'List';
+  a.addEventListener('click', listC.bind(undefined, messageDiv), false);
+
+  var div=document.createElement('div');
+  div.setAttribute('style', 'text-align: center; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;');
+  box.appendChild(div);
+  div.id='collectorList';
+
   box.appendChild(messageDiv);
+}
+
+function listC(messageDiv)
+{
+  var div=document.getElementById('collectorList');
+  div.innerHTML='';
+
+  var torrentList=messageDiv.getAttribute('torrentList');
+  if(!torrentList)
+    messageDiv.innerHTML = "You need to preview first";
+  torrentList=JSON.parse(torrentList);
+  for(var i=0; i<torrentList.length; i++)
+  {
+    div.innerHTML+='<br /><a href="'+torrentList[i].dl+'" title="'+torrentList[i].name+'">'+torrentList[i].name+'</a>';
+  }
 }
 
 function mouseOverLabel(options, event)
