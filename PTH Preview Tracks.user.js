@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH Preview Tracks
-// @version      2.4
+// @version      2.5
 // @description  Embed youtube clips for the tracks of a torrent group
 // @author       Chameleon
 // @include      http*://redacted.ch/torrents.php?id=*
@@ -623,7 +623,7 @@ function gotDiscogs(messageDiv, response)
 
   var tracks=makePreview(getDiscogTracks.bind(undefined, r.tracklist));
 
-  doTracks(r.artists[0].name, tracks);
+  doTracks(r.artists[0].name.split('(')[0], tracks);
 }
 
 function getDiscogTracks(tracks)
