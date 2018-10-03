@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH Collector
-// @version      1.7
+// @version      1.8
 // @description  Download multiple torrents by some criteria on PTH
 // @author       Chameleon
 // @include      http*://redacted.ch/*
@@ -270,7 +270,10 @@ function listC(messageDiv)
   torrentList=JSON.parse(torrentList);
   for(var i=0; i<torrentList.length; i++)
   {
-    div.innerHTML+='<br /><a href="'+torrentList[i].dl+'" title="'+torrentList[i].name+'">'+torrentList[i].name+'</a>';
+    var t=torrentList[i];
+    var id=parseInt(t.dl.split('id=')[1]);
+    var name=t.name.split('.torrent')[0];
+    div.innerHTML+='<br /><a href="/torrents.php?torrentid='+id+'" title="'+name+'">'+name+'</a>';
   }
 }
 
