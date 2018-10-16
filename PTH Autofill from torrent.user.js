@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH Autofill from torrent
-// @version      1.6
+// @version      1.7
 // @description  Attempt to read the .torrent file and fill in the artist and album
 // @author       Chameleon
 // @include      http*://redacted.ch/upload.php*
@@ -320,7 +320,7 @@ function readFile(event)
   for(var i=0; i<finalTracks.length; i++)
   {
     var f=finalTracks[i];
-    f=f.replace(/^[0-9][0-9]?[0-9]?\.?[ -_]?[ -_]?[ -_]/, '');
+    f=f.replace(/^[0-9][0-9]?[0-9]?\.?[\s-_]?[\s-_]?[\s-_]/, '');
     f=f.substring(0, f.lastIndexOf('.'));
     desc.value+='\r[#]'+f;
   }
