@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         PTH search link on discogs
-// @version      0.67
-// @description  Link to a search from discogs pages to PTH
+// @name         RED search link on discogs
+// @version      0.68
+// @description  Link to a search from discogs pages to RED
 // @author       Chameleon
 // @include      http*://*discogs.com/*
 // @include      http*://redacted.ch/upload.php*
@@ -69,7 +69,7 @@ function showDiscogs()
     img.src='https://ptpimg.me/2rwc77.png';
     img.style.height='1em';
     h3.appendChild(img);
-    h3.appendChild(document.createTextNode(' PTH'));
+    h3.appendChild(document.createTextNode(' RED'));
     var d1=document.createElement('div');
     d1.setAttribute('class', 'section_content');
     div.appendChild(d1);
