@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         RED search link on discogs
-// @version      0.68
+// @version      0.7
 // @description  Link to a search from discogs pages to RED
 // @author       Chameleon
 // @include      http*://*discogs.com/*
 // @include      http*://redacted.ch/upload.php*
+// @include      http*://redacted.ch/requests.php?action=new*
 // @grant        none
 // @namespace https://greasyfork.org/users/87476
 // ==/UserScript==
@@ -26,6 +27,18 @@ function showPTH()
     return;
   
   discogs=discogs[1];
+
+  if(window.location.href.indexOf('requests.php')!==-1)
+  {
+    var artist=decodeURIComponent(window.location.search.split('&artist=')[1].split('&')[0]);
+    var album=decodeURIComponent(window.location.search.split('&album=')[1].split('&')[0]);
+    var year=decodeURIComponent(window.location.search.split('&year=')[1].split('&')[0]);
+    document.getElementById('artist').value=artist;
+    document.getElementsByName('title')[0].value=album;
+    document.getElementsByName('year')[0].value=year;
+    return;
+  }
+
   var yadg_input=document.getElementById('yadg_input');
   if(!yadg_input)
   {
@@ -91,10 +104,26 @@ function showDiscogs()
     a.innerHTML = 'Upload original';
     d1.appendChild(a);
     d1.appendChild(document.createElement('br'));
-    
+
     var a=document.createElement('a');
     a.href="https://redacted.ch/upload.php?discogs="+encodeURIComponent(window.location.href);
     a.innerHTML = 'Upload edition';
+    d1.appendChild(a);
+    d1.appendChild(document.createElement('br'));
+
+    var year=document.getElementsByClassName('head');
+    for(var i=0; i<year.length; i++)
+    {
+      if(year[i].innerHTML.indexOf('Released')!==-1)
+      {
+        year=year[i].nextElementSibling.textContent.trim().split(' ');
+        year=year[year.length-1];
+        break;
+      }
+    }
+    var a=document.createElement('a');
+    a.href="https://redacted.ch/requests.php?action=new&discogs="+encodeURIComponent(window.location.href)+'&artist='+encodeURIComponent(artist)+'&album='+encodeURIComponent(album)+'&year='+year;
+    a.innerHTML = 'Request';
     d1.appendChild(a);
     d1.appendChild(document.createElement('br'));
     
