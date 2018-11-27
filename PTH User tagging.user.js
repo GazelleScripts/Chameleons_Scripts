@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH User tagging
-// @version      1.2
+// @version      1.3
 // @description  Tag, ignore, highlight, and change avatars for users on PTH and PTP
 // @author       Chameleon
 // @include      http*://redacted.ch/*
@@ -55,11 +55,14 @@ var current_site;
     setProfile();
   }
 
-  var posts=document.getElementsByClassName('forum_post');
+  //var posts=document.getElementsByClassName('forum_post');
+  var posts=document.querySelectorAll('.forum_post, .forum-post');
   for(var i=0; i<posts.length; i++)
   {
     var p=posts[i];
     if(p.getAttribute('class').indexOf('preview_wrap') != -1)
+      continue;
+    if(p.id=='reply_box')
       continue;
     var links;
     if(current_site==="RED")
@@ -215,7 +218,8 @@ function resetTags()
     ig.parentNode.removeChild(ig);
   }
 
-  var posts=document.getElementsByClassName('forum_post');
+  //var posts=document.getElementsByClassName('forum_post');
+  var posts=document.querySelectorAll('.forum_post, .forum-post');
   var length;
   if(current_site==="RED")
     length=posts.length-1;
@@ -233,6 +237,8 @@ function resetTags()
     var postTable=p;
 
     if(postTable.getAttribute('id') == 'preview_wrap_0')
+      continue;
+    if(p.id=='reply_box')
       continue;
     var u=postTable.getElementsByTagName('strong')[0].getElementsByTagName('a')[0];
     var username=u.textContent;
@@ -309,7 +315,8 @@ function addTags()
     }
   }
 
-  var posts=document.getElementsByClassName('forum_post');
+  //var posts=document.getElementsByClassName('forum_post');
+  var posts=document.querySelectorAll('.forum_post, .forum-post');
   var length;
   if(current_site==="RED")
     length=posts.length-1;
@@ -327,6 +334,8 @@ function addTags()
     var postTable=p;
 
     if(postTable.getAttribute('id') == 'preview_wrap_0')
+      continue;
+    if(p.id=='reply_box')
       continue;
     var u=postTable.getElementsByTagName('strong')[0].getElementsByTagName('a')[0];
     var username=u.textContent;
