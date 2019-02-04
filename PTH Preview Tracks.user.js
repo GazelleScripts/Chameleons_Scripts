@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         PTH Preview Tracks
-// @version      2.5
+// @version      2.6
 // @description  Embed youtube clips for the tracks of a torrent group
 // @author       Chameleon
-// @include      http*://redacted.ch/torrents.php?id=*
+// @include      http*://redacted.ch/torrents.php?*id=*
 // @include      http*://redacted.ch/index.php
 // @include      http*://redacted.ch/*threadid=1837*
 // @grant        none
