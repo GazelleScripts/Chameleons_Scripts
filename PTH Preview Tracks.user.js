@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH Preview Tracks
-// @version      2.7
+// @version      2.8
 // @description  Embed youtube clips for the tracks of a torrent group
 // @author       Chameleon
 // @include      http*://redacted.ch/torrents.php?*id=*
@@ -32,7 +32,7 @@ function visibilityChanged()
 
 function run()
 {
-  console.log(document.hidden);
+  //console.log(document.hidden);
   var settings=getSettings();
 
   if(settings.useYoutubeAPI)
@@ -93,6 +93,13 @@ function showSettings()
   div.appendChild(a);
   div.appendChild(document.createElement('br'));
 
+  var a=document.createElement('a');
+  a.href='javascript:void(0);';
+  a.innerHTML = 'Force show separate preview area: '+(settings.alwaysShowExtraBox ? 'On':'Off');
+  a.addEventListener('click', changeSettings.bind(undefined, a, div), false);
+  div.appendChild(a);
+  div.appendChild(document.createElement('br'));
+
   var input=document.createElement('input');
   input.placeholder = 'Youtube quality';
   input.value=settings.quality ? settings.quality:'';
@@ -149,6 +156,16 @@ function changeSettings(a, div)
       settings.hideTrackPreview = false;
   }
 
+  if(a == as[3])
+  {
+    if(as[3].innerHTML.indexOf('Off') != -1)
+    {
+      settings.alwaysShowExtraBox = true;
+    }
+    else
+      settings.alwaysShowExtraBox = false;
+  }
+
   var inputs=div.getElementsByTagName('input');
   settings.quality=inputs[0].value;
   settings.volume=inputs[1].value;
@@ -162,7 +179,7 @@ function getSettings()
   var settings = window.localStorage.previewTracksSettings;
   if(!settings)
   {
-    settings = {masterPlayer:false, useYoutubeAPI:true};
+    settings = {masterPlayer:false, useYoutubeAPI:true, alwaysShowExtraBox:false};
   }
   else
     settings = JSON.parse(settings);
@@ -567,7 +584,7 @@ function loadTorrent()
     var discogs_release=parseInt(tD.split('/release/')[1]);
     doDiscogs(discogs_release);
   }
-  else if(tracks.length > 0)
+  else if(tracks.length > 0 && !settings.alwaysShowExtraBox)
   {
     var s=document.createElement('span');
     var a=document.createElement('a');
