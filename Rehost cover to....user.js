@@ -181,7 +181,7 @@ function editPage(a, settings, response)
   div.innerHTML = response;
   var form = div.getElementsByClassName('edit_form')[0];
   var image_input = form.getElementsByTagName('input')[3];
-  form.getElementsByTagName('input')[4].value = 'auto-rehosted cover image to '+settings.site;
+  form.getElementsByTagName('input')[5].value = 'auto-rehosted cover image to '+settings.site;
 
   a.innerHTML = 'Rehosting to '+settings.site;
   doRehost(a, image_input, form, settings);
