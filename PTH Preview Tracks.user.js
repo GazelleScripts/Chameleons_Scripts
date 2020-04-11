@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         PTH Preview Tracks
-// @version      2.8
+// @version      2.9
 // @description  Embed youtube clips for the tracks of a torrent group
 // @author       Chameleon
 // @include      http*://redacted.ch/torrents.php?*id=*
@@ -115,6 +115,13 @@ function showSettings()
   div.appendChild(input);
   div.appendChild(document.createElement('br'));
 
+  var input=document.createElement('input');
+  input.placeholder = 'API Key';
+  input.value=settings.apiKey ? settings.apiKey:'AIzaSyBkMKh0dR1lWSrr2Bia_JdRc1kv7Nue8H8';
+  input.addEventListener('change', changeSettings.bind(undefined, undefined, div), false);
+  div.appendChild(input);
+  div.appendChild(document.createElement('br'));
+
   var a=document.createElement('a');
   div.appendChild(a);
   a.href='javascript:void(0);';
@@ -169,6 +176,7 @@ function changeSettings(a, div)
   var inputs=div.getElementsByTagName('input');
   settings.quality=inputs[0].value;
   settings.volume=inputs[1].value;
+  settings.apiKey=inputs[2].value;
 
   window.localStorage.previewTracksSettings = JSON.stringify(settings);
   showSettings();
@@ -469,9 +477,10 @@ function playPlaylistVideo(messageDiv)
     return;
   }
   showPlaylist(messageDiv, "yes");
+  var settings=getSettings();
   var search=encodeURIComponent((playlist[index].artist+' '+playlist[index].track).trim());
   var xhr = new XMLHttpRequest();
-  var apikey='AIzaSyBkMKh0dR1lWSrr2Bia_JdRc1kv7Nue8H8';
+  var apikey=settings.apiKey?settings.apiKey:'AIzaSyBkMKh0dR1lWSrr2Bia_JdRc1kv7Nue8H8';
   xhr.open('GET', "https://www.googleapis.com/youtube/v3/search?part=snippet&order=relevance&type=video&key="+apikey+"&q="+search);
   xhr.onreadystatechange = xhr_func.bind(undefined, messageDiv, xhr, playPlayer.bind(undefined, messageDiv), playPlaylistVideo.bind(undefined, messageDiv));
   xhr.send();
@@ -875,7 +884,8 @@ function preview(a, t, span, artist, track, index1, input)
   span.innerHTML = 'Getting videos';
   //track = track.split('(')[0];
   var xhr = new XMLHttpRequest();
-  var apikey='AIzaSyBkMKh0dR1lWSrr2Bia_JdRc1kv7Nue8H8';
+  var settings=getSettings();
+  var apikey=settings.apiKey?settings.apiKey:'AIzaSyBkMKh0dR1lWSrr2Bia_JdRc1kv7Nue8H8';
   var search=input.value.trim();
   //xhr.open('GET', "https://gdata.youtube.com/feeds/api/videos?v=2&alt=json&orderby=relevance&q="+encodeURIComponent(artist+' '+track));
   xhr.open('GET', "https://www.googleapis.com/youtube/v3/search?part=snippet&order=relevance&type=video&key="+apikey+"&q="+encodeURIComponent(search));
