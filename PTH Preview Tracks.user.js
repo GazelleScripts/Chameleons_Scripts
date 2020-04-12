@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name         PTH Preview Tracks
-// @version      2.9
+// @version      3.0
 // @description  Embed youtube clips for the tracks of a torrent group
 // @author       Chameleon
 // @include      http*://redacted.ch/torrents.php?*id=*
 // @include      http*://redacted.ch/index.php
 // @include      http*://redacted.ch/*threadid=1837*
-// @grant        none
+// @grant        GM_xmlhttpRequest
+// @connect      youtube.com
 // @namespace https://greasyfork.org/users/87476
 // ==/UserScript==
 
@@ -888,14 +889,30 @@ function preview(a, t, span, artist, track, index1, input)
   var apikey=settings.apiKey?settings.apiKey:'AIzaSyBkMKh0dR1lWSrr2Bia_JdRc1kv7Nue8H8';
   var search=input.value.trim();
   //xhr.open('GET', "https://gdata.youtube.com/feeds/api/videos?v=2&alt=json&orderby=relevance&q="+encodeURIComponent(artist+' '+track));
-  xhr.open('GET', "https://www.googleapis.com/youtube/v3/search?part=snippet&order=relevance&type=video&key="+apikey+"&q="+encodeURIComponent(search));
+  //xhr.open('GET', "https://www.googleapis.com/youtube/v3/search?part=snippet&order=relevance&type=video&key="+apikey+"&q="+encodeURIComponent(search));
+  /*console.log('https://www.youtube.com/results?search_query='+encodeURIComponent(search));
+  return;
+  xhr.open('GET', 'https://www.youtube.com/results?search_query='+encodeURIComponent(search));
   xhr.onreadystatechange = xhr_func.bind(undefined, span, xhr, previewing.bind(undefined, t, span), preview.bind(undefined, a, t, span, artist, track, input));
   xhr.send();
+  */
+  GM_xmlhttpRequest({
+    method:'GET',
+    url:'https://www.youtube.com/results?search_query='+encodeURIComponent(search),
+    onload:function(xhr)
+    {
+      if(xhr.readyState == 4 && xhr.status==200)
+      {
+        previewing(t, span, xhr);
+      }
+    }
+  });
 }
 
 function previewing(t, span, response)
 {
   span.innerHTML = 'Got videos';
+  /*
   var data=JSON.parse(response);
   if(data.items.length === 0)
   {
@@ -908,10 +925,35 @@ function previewing(t, span, response)
   {
     videoIds.push(data.items[i].id.videoId);
   }
+  */
+  var videoIds=[];
+  /*var newDoc=document.implementation.createHTMLDocument();
+  newDoc.body.innerHTML=response.responseText;
+  var as=newDoc.querySelectorAll('a.ytd-thumbnail');
+  console.log(response.responseText);
+  for(var i=0; i<as.length; i++)
+  {
+    var a=as[i];
+    if(a.href.indexOf('watch?v=')==-1)
+      continue;
+    videoIds.push(a.href.split('watch?v=')[1]);
+  }
+  */
+  var splits=response.responseText.split('"videoId":"');
+  for(var i=1; i<splits.length-1; i++)
+  {
+    videoIds.push(splits[i].split('"')[0]);
+  }
+  if(videoIds.length === 0)
+  {
+    span.innerHTML = "Couldn't find any videos :(";
+    window.setTimeout(clear.bind(undefined, span), 5000);
+    return;
+  }
   t.setAttribute('videoIds', JSON.stringify(videoIds));
   t.setAttribute('index', 1);
 
-  addEmbed(t, span, data.items[0].id.videoId);
+  addEmbed(t, span, videoIds[0]);
 }
 
 function addEmbed(t, span, videoId)
