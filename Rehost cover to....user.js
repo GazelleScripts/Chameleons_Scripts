@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name         Rehost cover to...
-// @version      0.9
+// @version      1.10
 // @description  Rehost an existing cover image to a whitelisted site
 // @author       Chameleon
-// @include      http*://*passtheheadphones.me/torrents.php?id=*
-// @include      http*://*passtheheadphones.me/forums.php?*threadid=1737*
+// @include      http*://*redacted.ch/torrents.php?id=*
+// @include      http*://*redacted.ch/forums.php?*threadid=1737*
 // @grant        GM_xmlhttpRequest
+// @namespace https://greasyfork.org/users/87476
 // ==/UserScript==
 
 (function() {
@@ -181,7 +182,7 @@ function editPage(a, settings, response)
   div.innerHTML = response;
   var form = div.getElementsByClassName('edit_form')[0];
   var image_input = form.getElementsByTagName('input')[3];
-  form.getElementsByTagName('input')[4].value = 'auto-rehosted cover image to '+settings.site;
+  form.getElementsByTagName('input')[5].value = 'auto-rehosted cover image to '+settings.site;
 
   a.innerHTML = 'Rehosting to '+settings.site;
   doRehost(a, image_input, form, settings);
@@ -263,7 +264,13 @@ function submit(a, form, imageSrc, settings)
   {
     if(inputs[i].name === "")
       continue;
-    formData.append(inputs[i].name, inputs[i].value);
+    if(inputs[i].type === "checkbox")
+    {
+      if(inputs[i].checked)
+        formData.append(inputs[i].name, inputs[i].value);
+    }
+    else
+      formData.append(inputs[i].name, inputs[i].value);
   }
   var textarea = form.getElementsByTagName('textarea')[0];
   formData.append(textarea.name, textarea.value);
