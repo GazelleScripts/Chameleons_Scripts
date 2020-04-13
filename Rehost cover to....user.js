@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         Rehost cover to...
-// @version      1.00
+// @version      0.9
 // @description  Rehost an existing cover image to a whitelisted site
 // @author       Chameleon
-// @include      http*://*redacted.ch/torrents.php?id=*
-// @include      http*://*redacted.ch/forums.php?*threadid=1737*
+// @include      http*://*passtheheadphones.me/torrents.php?id=*
+// @include      http*://*passtheheadphones.me/forums.php?*threadid=1737*
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
@@ -181,7 +181,7 @@ function editPage(a, settings, response)
   div.innerHTML = response;
   var form = div.getElementsByClassName('edit_form')[0];
   var image_input = form.getElementsByTagName('input')[3];
-  form.getElementsByTagName('input')[5].value = 'auto-rehosted cover image to '+settings.site;
+  form.getElementsByTagName('input')[4].value = 'auto-rehosted cover image to '+settings.site;
 
   a.innerHTML = 'Rehosting to '+settings.site;
   doRehost(a, image_input, form, settings);
@@ -191,7 +191,7 @@ function doRehost(a, image_input, form, settings)
 {
   if(image_input.value.indexOf("discogs.com") != -1)
   {
-    image_input.value = "http://reho.st/"+image_input.value;
+    image_input.value = "http://demo.cloudimg.io/v7/"+image_input.value;
   }
   if(settings.site == 'imgur.com')
   {
@@ -263,13 +263,7 @@ function submit(a, form, imageSrc, settings)
   {
     if(inputs[i].name === "")
       continue;
-    if(inputs[i].type === "checkbox")
-    {
-      if(inputs[i].checked)
-        formData.append(inputs[i].name, inputs[i].value);
-    }
-    else
-      formData.append(inputs[i].name, inputs[i].value);
+    formData.append(inputs[i].name, inputs[i].value);
   }
   var textarea = form.getElementsByTagName('textarea')[0];
   formData.append(textarea.name, textarea.value);
